@@ -1,64 +1,64 @@
-// Generated from /Users/jordanly/Documents/workspace/ra3/src/main/java/ra/RAParser.g4 by ANTLR 4.5.1
-package ra;
+// Generated from /Users/jordanly/Documents/workspace/ra3/src/main/java/grammar/RAGrammar.g4 by ANTLR 4.5.1
+package grammar.gen;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 /**
- * This class provides an empty implementation of {@link RAParserListener},
+ * This class provides an empty implementation of {@link RAGrammarListener},
  * which can be extended to create a listener which only needs to handle a subset
  * of the available methods.
  */
-public class RAParserBaseListener implements RAParserListener {
+public class RAGrammarBaseListener implements RAGrammarListener {
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterExp0(RAParser.Exp0Context ctx) { }
+	@Override public void enterExp0(RAGrammarParser.Exp0Context ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitExp0(RAParser.Exp0Context ctx) { }
+	@Override public void exitExp0(RAGrammarParser.Exp0Context ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterExp_unit(RAParser.Exp_unitContext ctx) { }
+	@Override public void enterExp_unit(RAGrammarParser.Exp_unitContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitExp_unit(RAParser.Exp_unitContext ctx) { }
+	@Override public void exitExp_unit(RAGrammarParser.Exp_unitContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterExp_unary(RAParser.Exp_unaryContext ctx) { }
+	@Override public void enterExp_unary(RAGrammarParser.Exp_unaryContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitExp_unary(RAParser.Exp_unaryContext ctx) { }
+	@Override public void exitExp_unary(RAGrammarParser.Exp_unaryContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterExp(RAParser.ExpContext ctx) { }
+	@Override public void enterExp(RAGrammarParser.ExpContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitExp(RAParser.ExpContext ctx) { }
+	@Override public void exitExp(RAGrammarParser.ExpContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

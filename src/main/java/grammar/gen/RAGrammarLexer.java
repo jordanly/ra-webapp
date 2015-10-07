@@ -1,5 +1,5 @@
-// Generated from /Users/jordanly/Documents/workspace/ra3/src/main/java/ra/RALexer.g4 by ANTLR 4.5.1
-package ra;
+// Generated from /Users/jordanly/Documents/workspace/ra3/src/main/java/grammar/RAGrammar.g4 by ANTLR 4.5.1
+package grammar.gen;
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Token;
@@ -10,7 +10,7 @@ import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.misc.*;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
-public class RALexer extends Lexer {
+public class RAGrammarLexer extends Lexer {
 	static { RuntimeMetaData.checkVersion("4.5.1", RuntimeMetaData.VERSION); }
 
 	protected static final DFA[] _decisionToDFA;
@@ -74,13 +74,13 @@ public class RALexer extends Lexer {
 	}
 
 
-	public RALexer(CharStream input) {
+	public RAGrammarLexer(CharStream input) {
 		super(input);
 		_interp = new LexerATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
 	}
 
 	@Override
-	public String getGrammarFileName() { return "RALexer.g4"; }
+	public String getGrammarFileName() { return "RAGrammar.g4"; }
 
 	@Override
 	public String[] getRuleNames() { return ruleNames; }
