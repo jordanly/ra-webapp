@@ -1,5 +1,7 @@
 grammar RAGrammar ;
 
+// Lexer rules
+
 fragment DIGIT : [0-9] ;
 fragment ALPHA : [a-zA-Z]+ ;
 WS : [ \t\r\n]+ -> skip ;
@@ -26,24 +28,28 @@ INSIDE_OPERATOR_OPTION : ~('}'|'\n'|'\r') ;
 // C style comments
 COMMENT : '/*' .*? '*/' -> channel(HIDDEN) ;
 
-// PARSER
+// ==========================================
+
+// Parser Rules
 
 exp0        : exp STATEMENT_TERMINATOR EOF ;
 
-exp_unit    : TABLE_NAME
-            | LEFT_PAREN exp RIGHT_PAREN
+exp_unit    : TABLE_NAME                                #tableExp
+            | LEFT_PAREN exp RIGHT_PAREN                #parenExp
             ;
 
-exp_unary   : exp_unit
-            | SELECT OPERATOR_OPTION exp_unary
-            | PROJECT OPERATOR_OPTION exp_unary
-            | RENAME OPERATOR_OPTION exp_unary
+exp_unary   : exp_unit                                  #unitExp
+            | SELECT OPERATOR_OPTION exp_unary          #unaryExp
+            | PROJECT OPERATOR_OPTION exp_unary         #unaryExp
+            | RENAME OPERATOR_OPTION exp_unary          #unaryExp
             ;
 
-exp         : exp_unary
-            | exp_unary JOIN OPERATOR_OPTION exp_unary
-            | exp_unary CROSS exp_unary
-            | exp_unary UNION exp_unary
-            | exp_unary DIFF exp_unary
-            | exp_unary INTERSECT exp_unary
+exp         : exp_unary                                 #singleUnaryExp
+            | exp_unary JOIN OPERATOR_OPTION exp_unary  #joinExp
+            | exp_unary CROSS exp_unary                 #binaryExp
+            | exp_unary UNION exp_unary                 #binaryExp
+            | exp_unary DIFF exp_unary                  #binaryExp
+            | exp_unary INTERSECT exp_unary             #binaryExp
             ;
+
+// ==========================================

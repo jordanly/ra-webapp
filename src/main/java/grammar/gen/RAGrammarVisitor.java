@@ -17,21 +17,52 @@ public interface RAGrammarVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitExp0(RAGrammarParser.Exp0Context ctx);
 	/**
-	 * Visit a parse tree produced by {@link RAGrammarParser#exp_unit}.
+	 * Visit a parse tree produced by the {@code tableExp}
+	 * labeled alternative in {@link RAGrammarParser#exp_unit}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitExp_unit(RAGrammarParser.Exp_unitContext ctx);
+	T visitTableExp(RAGrammarParser.TableExpContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link RAGrammarParser#exp_unary}.
+	 * Visit a parse tree produced by the {@code parenExp}
+	 * labeled alternative in {@link RAGrammarParser#exp_unit}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitExp_unary(RAGrammarParser.Exp_unaryContext ctx);
+	T visitParenExp(RAGrammarParser.ParenExpContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link RAGrammarParser#exp}.
+	 * Visit a parse tree produced by the {@code unitExp}
+	 * labeled alternative in {@link RAGrammarParser#exp_unary}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitExp(RAGrammarParser.ExpContext ctx);
+	T visitUnitExp(RAGrammarParser.UnitExpContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code unaryExp}
+	 * labeled alternative in {@link RAGrammarParser#exp_unary}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitUnaryExp(RAGrammarParser.UnaryExpContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code singleUnaryExp}
+	 * labeled alternative in {@link RAGrammarParser#exp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSingleUnaryExp(RAGrammarParser.SingleUnaryExpContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code joinExp}
+	 * labeled alternative in {@link RAGrammarParser#exp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitJoinExp(RAGrammarParser.JoinExpContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code binaryExp}
+	 * labeled alternative in {@link RAGrammarParser#exp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBinaryExp(RAGrammarParser.BinaryExpContext ctx);
 }

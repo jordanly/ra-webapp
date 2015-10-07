@@ -1,7 +1,9 @@
 package ra;
+import grammar.RAEvalVisitor;
 import grammar.gen.RAGrammarLexer;
 import grammar.gen.RAGrammarParser;
 import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.tree.ParseTree;
 
 
 /**
@@ -15,8 +17,12 @@ public class RA {
         RAGrammarParser parser = new RAGrammarParser(tokenStream);
 
         try {
-            RAGrammarParser.Exp0Context context = parser.exp0();
-            System.out.println(context);
+//            RAGrammarParser.Exp0Context context = parser.exp0();
+//            System.out.println(context);
+
+            ParseTree tree = parser.exp0();
+            System.out.println("value = ");
+            System.out.println(new RAEvalVisitor().visit(tree));
 
         } catch (Exception e) {
             System.out.println(e.toString());

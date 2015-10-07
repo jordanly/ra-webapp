@@ -18,33 +18,87 @@ public interface RAGrammarListener extends ParseTreeListener {
 	 */
 	void exitExp0(RAGrammarParser.Exp0Context ctx);
 	/**
-	 * Enter a parse tree produced by {@link RAGrammarParser#exp_unit}.
+	 * Enter a parse tree produced by the {@code tableExp}
+	 * labeled alternative in {@link RAGrammarParser#exp_unit}.
 	 * @param ctx the parse tree
 	 */
-	void enterExp_unit(RAGrammarParser.Exp_unitContext ctx);
+	void enterTableExp(RAGrammarParser.TableExpContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link RAGrammarParser#exp_unit}.
+	 * Exit a parse tree produced by the {@code tableExp}
+	 * labeled alternative in {@link RAGrammarParser#exp_unit}.
 	 * @param ctx the parse tree
 	 */
-	void exitExp_unit(RAGrammarParser.Exp_unitContext ctx);
+	void exitTableExp(RAGrammarParser.TableExpContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link RAGrammarParser#exp_unary}.
+	 * Enter a parse tree produced by the {@code parenExp}
+	 * labeled alternative in {@link RAGrammarParser#exp_unit}.
 	 * @param ctx the parse tree
 	 */
-	void enterExp_unary(RAGrammarParser.Exp_unaryContext ctx);
+	void enterParenExp(RAGrammarParser.ParenExpContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link RAGrammarParser#exp_unary}.
+	 * Exit a parse tree produced by the {@code parenExp}
+	 * labeled alternative in {@link RAGrammarParser#exp_unit}.
 	 * @param ctx the parse tree
 	 */
-	void exitExp_unary(RAGrammarParser.Exp_unaryContext ctx);
+	void exitParenExp(RAGrammarParser.ParenExpContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link RAGrammarParser#exp}.
+	 * Enter a parse tree produced by the {@code unitExp}
+	 * labeled alternative in {@link RAGrammarParser#exp_unary}.
 	 * @param ctx the parse tree
 	 */
-	void enterExp(RAGrammarParser.ExpContext ctx);
+	void enterUnitExp(RAGrammarParser.UnitExpContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link RAGrammarParser#exp}.
+	 * Exit a parse tree produced by the {@code unitExp}
+	 * labeled alternative in {@link RAGrammarParser#exp_unary}.
 	 * @param ctx the parse tree
 	 */
-	void exitExp(RAGrammarParser.ExpContext ctx);
+	void exitUnitExp(RAGrammarParser.UnitExpContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code unaryExp}
+	 * labeled alternative in {@link RAGrammarParser#exp_unary}.
+	 * @param ctx the parse tree
+	 */
+	void enterUnaryExp(RAGrammarParser.UnaryExpContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code unaryExp}
+	 * labeled alternative in {@link RAGrammarParser#exp_unary}.
+	 * @param ctx the parse tree
+	 */
+	void exitUnaryExp(RAGrammarParser.UnaryExpContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code singleUnaryExp}
+	 * labeled alternative in {@link RAGrammarParser#exp}.
+	 * @param ctx the parse tree
+	 */
+	void enterSingleUnaryExp(RAGrammarParser.SingleUnaryExpContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code singleUnaryExp}
+	 * labeled alternative in {@link RAGrammarParser#exp}.
+	 * @param ctx the parse tree
+	 */
+	void exitSingleUnaryExp(RAGrammarParser.SingleUnaryExpContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code joinExp}
+	 * labeled alternative in {@link RAGrammarParser#exp}.
+	 * @param ctx the parse tree
+	 */
+	void enterJoinExp(RAGrammarParser.JoinExpContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code joinExp}
+	 * labeled alternative in {@link RAGrammarParser#exp}.
+	 * @param ctx the parse tree
+	 */
+	void exitJoinExp(RAGrammarParser.JoinExpContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code binaryExp}
+	 * labeled alternative in {@link RAGrammarParser#exp}.
+	 * @param ctx the parse tree
+	 */
+	void enterBinaryExp(RAGrammarParser.BinaryExpContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code binaryExp}
+	 * labeled alternative in {@link RAGrammarParser#exp}.
+	 * @param ctx the parse tree
+	 */
+	void exitBinaryExp(RAGrammarParser.BinaryExpContext ctx);
 }

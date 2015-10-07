@@ -136,27 +136,51 @@ public class RAGrammarParser extends Parser {
 	}
 
 	public static class Exp_unitContext extends ParserRuleContext {
-		public TerminalNode TABLE_NAME() { return getToken(RAGrammarParser.TABLE_NAME, 0); }
+		public Exp_unitContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_exp_unit; }
+	 
+		public Exp_unitContext() { }
+		public void copyFrom(Exp_unitContext ctx) {
+			super.copyFrom(ctx);
+		}
+	}
+	public static class ParenExpContext extends Exp_unitContext {
 		public TerminalNode LEFT_PAREN() { return getToken(RAGrammarParser.LEFT_PAREN, 0); }
 		public ExpContext exp() {
 			return getRuleContext(ExpContext.class,0);
 		}
 		public TerminalNode RIGHT_PAREN() { return getToken(RAGrammarParser.RIGHT_PAREN, 0); }
-		public Exp_unitContext(ParserRuleContext parent, int invokingState) {
-			super(parent, invokingState);
-		}
-		@Override public int getRuleIndex() { return RULE_exp_unit; }
+		public ParenExpContext(Exp_unitContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof RAGrammarListener ) ((RAGrammarListener)listener).enterExp_unit(this);
+			if ( listener instanceof RAGrammarListener ) ((RAGrammarListener)listener).enterParenExp(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof RAGrammarListener ) ((RAGrammarListener)listener).exitExp_unit(this);
+			if ( listener instanceof RAGrammarListener ) ((RAGrammarListener)listener).exitParenExp(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof RAGrammarVisitor ) return ((RAGrammarVisitor<? extends T>)visitor).visitExp_unit(this);
+			if ( visitor instanceof RAGrammarVisitor ) return ((RAGrammarVisitor<? extends T>)visitor).visitParenExp(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class TableExpContext extends Exp_unitContext {
+		public TerminalNode TABLE_NAME() { return getToken(RAGrammarParser.TABLE_NAME, 0); }
+		public TableExpContext(Exp_unitContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof RAGrammarListener ) ((RAGrammarListener)listener).enterTableExp(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof RAGrammarListener ) ((RAGrammarListener)listener).exitTableExp(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof RAGrammarVisitor ) return ((RAGrammarVisitor<? extends T>)visitor).visitTableExp(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -168,6 +192,7 @@ public class RAGrammarParser extends Parser {
 			setState(17);
 			switch (_input.LA(1)) {
 			case TABLE_NAME:
+				_localctx = new TableExpContext(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(12);
@@ -175,6 +200,7 @@ public class RAGrammarParser extends Parser {
 				}
 				break;
 			case LEFT_PAREN:
+				_localctx = new ParenExpContext(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
 				setState(13);
@@ -201,9 +227,36 @@ public class RAGrammarParser extends Parser {
 	}
 
 	public static class Exp_unaryContext extends ParserRuleContext {
+		public Exp_unaryContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_exp_unary; }
+	 
+		public Exp_unaryContext() { }
+		public void copyFrom(Exp_unaryContext ctx) {
+			super.copyFrom(ctx);
+		}
+	}
+	public static class UnitExpContext extends Exp_unaryContext {
 		public Exp_unitContext exp_unit() {
 			return getRuleContext(Exp_unitContext.class,0);
 		}
+		public UnitExpContext(Exp_unaryContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof RAGrammarListener ) ((RAGrammarListener)listener).enterUnitExp(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof RAGrammarListener ) ((RAGrammarListener)listener).exitUnitExp(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof RAGrammarVisitor ) return ((RAGrammarVisitor<? extends T>)visitor).visitUnitExp(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class UnaryExpContext extends Exp_unaryContext {
 		public TerminalNode SELECT() { return getToken(RAGrammarParser.SELECT, 0); }
 		public TerminalNode OPERATOR_OPTION() { return getToken(RAGrammarParser.OPERATOR_OPTION, 0); }
 		public Exp_unaryContext exp_unary() {
@@ -211,21 +264,18 @@ public class RAGrammarParser extends Parser {
 		}
 		public TerminalNode PROJECT() { return getToken(RAGrammarParser.PROJECT, 0); }
 		public TerminalNode RENAME() { return getToken(RAGrammarParser.RENAME, 0); }
-		public Exp_unaryContext(ParserRuleContext parent, int invokingState) {
-			super(parent, invokingState);
-		}
-		@Override public int getRuleIndex() { return RULE_exp_unary; }
+		public UnaryExpContext(Exp_unaryContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof RAGrammarListener ) ((RAGrammarListener)listener).enterExp_unary(this);
+			if ( listener instanceof RAGrammarListener ) ((RAGrammarListener)listener).enterUnaryExp(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof RAGrammarListener ) ((RAGrammarListener)listener).exitExp_unary(this);
+			if ( listener instanceof RAGrammarListener ) ((RAGrammarListener)listener).exitUnaryExp(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof RAGrammarVisitor ) return ((RAGrammarVisitor<? extends T>)visitor).visitExp_unary(this);
+			if ( visitor instanceof RAGrammarVisitor ) return ((RAGrammarVisitor<? extends T>)visitor).visitUnaryExp(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -238,6 +288,7 @@ public class RAGrammarParser extends Parser {
 			switch (_input.LA(1)) {
 			case LEFT_PAREN:
 			case TABLE_NAME:
+				_localctx = new UnitExpContext(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(19);
@@ -245,6 +296,7 @@ public class RAGrammarParser extends Parser {
 				}
 				break;
 			case SELECT:
+				_localctx = new UnaryExpContext(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
 				setState(20);
@@ -256,6 +308,7 @@ public class RAGrammarParser extends Parser {
 				}
 				break;
 			case PROJECT:
+				_localctx = new UnaryExpContext(_localctx);
 				enterOuterAlt(_localctx, 3);
 				{
 				setState(23);
@@ -267,6 +320,7 @@ public class RAGrammarParser extends Parser {
 				}
 				break;
 			case RENAME:
+				_localctx = new UnaryExpContext(_localctx);
 				enterOuterAlt(_localctx, 4);
 				{
 				setState(26);
@@ -293,6 +347,62 @@ public class RAGrammarParser extends Parser {
 	}
 
 	public static class ExpContext extends ParserRuleContext {
+		public ExpContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_exp; }
+	 
+		public ExpContext() { }
+		public void copyFrom(ExpContext ctx) {
+			super.copyFrom(ctx);
+		}
+	}
+	public static class SingleUnaryExpContext extends ExpContext {
+		public Exp_unaryContext exp_unary() {
+			return getRuleContext(Exp_unaryContext.class,0);
+		}
+		public SingleUnaryExpContext(ExpContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof RAGrammarListener ) ((RAGrammarListener)listener).enterSingleUnaryExp(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof RAGrammarListener ) ((RAGrammarListener)listener).exitSingleUnaryExp(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof RAGrammarVisitor ) return ((RAGrammarVisitor<? extends T>)visitor).visitSingleUnaryExp(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class BinaryExpContext extends ExpContext {
+		public List<Exp_unaryContext> exp_unary() {
+			return getRuleContexts(Exp_unaryContext.class);
+		}
+		public Exp_unaryContext exp_unary(int i) {
+			return getRuleContext(Exp_unaryContext.class,i);
+		}
+		public TerminalNode CROSS() { return getToken(RAGrammarParser.CROSS, 0); }
+		public TerminalNode UNION() { return getToken(RAGrammarParser.UNION, 0); }
+		public TerminalNode DIFF() { return getToken(RAGrammarParser.DIFF, 0); }
+		public TerminalNode INTERSECT() { return getToken(RAGrammarParser.INTERSECT, 0); }
+		public BinaryExpContext(ExpContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof RAGrammarListener ) ((RAGrammarListener)listener).enterBinaryExp(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof RAGrammarListener ) ((RAGrammarListener)listener).exitBinaryExp(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof RAGrammarVisitor ) return ((RAGrammarVisitor<? extends T>)visitor).visitBinaryExp(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class JoinExpContext extends ExpContext {
 		public List<Exp_unaryContext> exp_unary() {
 			return getRuleContexts(Exp_unaryContext.class);
 		}
@@ -301,25 +411,18 @@ public class RAGrammarParser extends Parser {
 		}
 		public TerminalNode JOIN() { return getToken(RAGrammarParser.JOIN, 0); }
 		public TerminalNode OPERATOR_OPTION() { return getToken(RAGrammarParser.OPERATOR_OPTION, 0); }
-		public TerminalNode CROSS() { return getToken(RAGrammarParser.CROSS, 0); }
-		public TerminalNode UNION() { return getToken(RAGrammarParser.UNION, 0); }
-		public TerminalNode DIFF() { return getToken(RAGrammarParser.DIFF, 0); }
-		public TerminalNode INTERSECT() { return getToken(RAGrammarParser.INTERSECT, 0); }
-		public ExpContext(ParserRuleContext parent, int invokingState) {
-			super(parent, invokingState);
-		}
-		@Override public int getRuleIndex() { return RULE_exp; }
+		public JoinExpContext(ExpContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof RAGrammarListener ) ((RAGrammarListener)listener).enterExp(this);
+			if ( listener instanceof RAGrammarListener ) ((RAGrammarListener)listener).enterJoinExp(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof RAGrammarListener ) ((RAGrammarListener)listener).exitExp(this);
+			if ( listener instanceof RAGrammarListener ) ((RAGrammarListener)listener).exitJoinExp(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof RAGrammarVisitor ) return ((RAGrammarVisitor<? extends T>)visitor).visitExp(this);
+			if ( visitor instanceof RAGrammarVisitor ) return ((RAGrammarVisitor<? extends T>)visitor).visitJoinExp(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -331,6 +434,7 @@ public class RAGrammarParser extends Parser {
 			setState(53);
 			switch ( getInterpreter().adaptivePredict(_input,2,_ctx) ) {
 			case 1:
+				_localctx = new SingleUnaryExpContext(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(31);
@@ -338,6 +442,7 @@ public class RAGrammarParser extends Parser {
 				}
 				break;
 			case 2:
+				_localctx = new JoinExpContext(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
 				setState(32);
@@ -351,6 +456,7 @@ public class RAGrammarParser extends Parser {
 				}
 				break;
 			case 3:
+				_localctx = new BinaryExpContext(_localctx);
 				enterOuterAlt(_localctx, 3);
 				{
 				setState(37);
@@ -362,6 +468,7 @@ public class RAGrammarParser extends Parser {
 				}
 				break;
 			case 4:
+				_localctx = new BinaryExpContext(_localctx);
 				enterOuterAlt(_localctx, 4);
 				{
 				setState(41);
@@ -373,6 +480,7 @@ public class RAGrammarParser extends Parser {
 				}
 				break;
 			case 5:
+				_localctx = new BinaryExpContext(_localctx);
 				enterOuterAlt(_localctx, 5);
 				{
 				setState(45);
@@ -384,6 +492,7 @@ public class RAGrammarParser extends Parser {
 				}
 				break;
 			case 6:
+				_localctx = new BinaryExpContext(_localctx);
 				enterOuterAlt(_localctx, 6);
 				{
 				setState(49);

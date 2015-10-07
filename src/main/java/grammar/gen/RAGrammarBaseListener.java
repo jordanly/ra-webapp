@@ -28,37 +28,85 @@ public class RAGrammarBaseListener implements RAGrammarListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterExp_unit(RAGrammarParser.Exp_unitContext ctx) { }
+	@Override public void enterTableExp(RAGrammarParser.TableExpContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitExp_unit(RAGrammarParser.Exp_unitContext ctx) { }
+	@Override public void exitTableExp(RAGrammarParser.TableExpContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterExp_unary(RAGrammarParser.Exp_unaryContext ctx) { }
+	@Override public void enterParenExp(RAGrammarParser.ParenExpContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitExp_unary(RAGrammarParser.Exp_unaryContext ctx) { }
+	@Override public void exitParenExp(RAGrammarParser.ParenExpContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterExp(RAGrammarParser.ExpContext ctx) { }
+	@Override public void enterUnitExp(RAGrammarParser.UnitExpContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitExp(RAGrammarParser.ExpContext ctx) { }
+	@Override public void exitUnitExp(RAGrammarParser.UnitExpContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterUnaryExp(RAGrammarParser.UnaryExpContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitUnaryExp(RAGrammarParser.UnaryExpContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterSingleUnaryExp(RAGrammarParser.SingleUnaryExpContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitSingleUnaryExp(RAGrammarParser.SingleUnaryExpContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterJoinExp(RAGrammarParser.JoinExpContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitJoinExp(RAGrammarParser.JoinExpContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterBinaryExp(RAGrammarParser.BinaryExpContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitBinaryExp(RAGrammarParser.BinaryExpContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
