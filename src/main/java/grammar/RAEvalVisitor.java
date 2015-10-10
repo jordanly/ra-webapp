@@ -14,7 +14,7 @@ public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
         String operation = ctx.getChild(0).getText();
         switch (operation) {
             case "\\select":
-                output.append("SELECT * FROM");
+                output.append("SELECT * FROM ");
                 break;
             case "\\proj":
                 output.append("SELECT TODO");

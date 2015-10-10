@@ -2,6 +2,8 @@ TODO
 ====
 - Finish visitor/generation of SQL statements
 - Create REST API
+- Set up PostgreSQL database, maybe need to make a build script to set it up?
+    - Current plan: run PostgreSQL on Vagrant and connect to it from local
 
 Build Steps
 ===========
@@ -11,3 +13,10 @@ Using IntelliJ:
     - Build -> Generate Artifacts
     - This creates a jar file with all dependenceis in ra3/out/..../ra3_jar
     - java -jar [ JAR name ]
+
+
+PostgreSQL
+CREATE DATABASE
+CREATE USER
+GRANT PRIVILEGES
+Connect to connection string in Java
