@@ -46,6 +46,7 @@ exp_unary   : exp_unit                                  #unitExp
 
 exp         : exp_unary                                 #singleUnaryExp
             | exp_unary JOIN OPERATOR_OPTION exp_unary  #joinExp
+            | exp_unary JOIN exp_unary                  #binaryExp
             | exp_unary CROSS exp_unary                 #binaryExp
             | exp_unary UNION exp_unary                 #binaryExp
             | exp_unary DIFF exp_unary                  #binaryExp

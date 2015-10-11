@@ -383,6 +383,7 @@ public class RAGrammarParser extends Parser {
 		public Exp_unaryContext exp_unary(int i) {
 			return getRuleContext(Exp_unaryContext.class,i);
 		}
+		public TerminalNode JOIN() { return getToken(RAGrammarParser.JOIN, 0); }
 		public TerminalNode CROSS() { return getToken(RAGrammarParser.CROSS, 0); }
 		public TerminalNode UNION() { return getToken(RAGrammarParser.UNION, 0); }
 		public TerminalNode DIFF() { return getToken(RAGrammarParser.DIFF, 0); }
@@ -431,7 +432,7 @@ public class RAGrammarParser extends Parser {
 		ExpContext _localctx = new ExpContext(_ctx, getState());
 		enterRule(_localctx, 6, RULE_exp);
 		try {
-			setState(53);
+			setState(57);
 			switch ( getInterpreter().adaptivePredict(_input,2,_ctx) ) {
 			case 1:
 				_localctx = new SingleUnaryExpContext(_localctx);
@@ -462,7 +463,7 @@ public class RAGrammarParser extends Parser {
 				setState(37);
 				exp_unary();
 				setState(38);
-				match(CROSS);
+				match(JOIN);
 				setState(39);
 				exp_unary();
 				}
@@ -474,7 +475,7 @@ public class RAGrammarParser extends Parser {
 				setState(41);
 				exp_unary();
 				setState(42);
-				match(UNION);
+				match(CROSS);
 				setState(43);
 				exp_unary();
 				}
@@ -486,7 +487,7 @@ public class RAGrammarParser extends Parser {
 				setState(45);
 				exp_unary();
 				setState(46);
-				match(DIFF);
+				match(UNION);
 				setState(47);
 				exp_unary();
 				}
@@ -498,8 +499,20 @@ public class RAGrammarParser extends Parser {
 				setState(49);
 				exp_unary();
 				setState(50);
-				match(INTERSECT);
+				match(DIFF);
 				setState(51);
+				exp_unary();
+				}
+				break;
+			case 7:
+				_localctx = new BinaryExpContext(_localctx);
+				enterOuterAlt(_localctx, 7);
+				{
+				setState(53);
+				exp_unary();
+				setState(54);
+				match(INTERSECT);
+				setState(55);
 				exp_unary();
 				}
 				break;
@@ -517,22 +530,23 @@ public class RAGrammarParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3\23:\4\2\t\2\4\3\t"+
+		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3\23>\4\2\t\2\4\3\t"+
 		"\3\4\4\t\4\4\5\t\5\3\2\3\2\3\2\3\2\3\3\3\3\3\3\3\3\3\3\5\3\24\n\3\3\4"+
 		"\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\5\4 \n\4\3\5\3\5\3\5\3\5\3\5\3\5"+
-		"\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\5\58"+
-		"\n\5\3\5\2\2\6\2\4\6\b\2\2>\2\n\3\2\2\2\4\23\3\2\2\2\6\37\3\2\2\2\b\67"+
-		"\3\2\2\2\n\13\5\b\5\2\13\f\7\6\2\2\f\r\7\2\2\3\r\3\3\2\2\2\16\24\7\7\2"+
-		"\2\17\20\7\4\2\2\20\21\5\b\5\2\21\22\7\5\2\2\22\24\3\2\2\2\23\16\3\2\2"+
-		"\2\23\17\3\2\2\2\24\5\3\2\2\2\25 \5\4\3\2\26\27\7\b\2\2\27\30\7\21\2\2"+
-		"\30 \5\6\4\2\31\32\7\t\2\2\32\33\7\21\2\2\33 \5\6\4\2\34\35\7\17\2\2\35"+
-		"\36\7\21\2\2\36 \5\6\4\2\37\25\3\2\2\2\37\26\3\2\2\2\37\31\3\2\2\2\37"+
-		"\34\3\2\2\2 \7\3\2\2\2!8\5\6\4\2\"#\5\6\4\2#$\7\n\2\2$%\7\21\2\2%&\5\6"+
-		"\4\2&8\3\2\2\2\'(\5\6\4\2()\7\13\2\2)*\5\6\4\2*8\3\2\2\2+,\5\6\4\2,-\7"+
-		"\f\2\2-.\5\6\4\2.8\3\2\2\2/\60\5\6\4\2\60\61\7\r\2\2\61\62\5\6\4\2\62"+
-		"8\3\2\2\2\63\64\5\6\4\2\64\65\7\16\2\2\65\66\5\6\4\2\668\3\2\2\2\67!\3"+
-		"\2\2\2\67\"\3\2\2\2\67\'\3\2\2\2\67+\3\2\2\2\67/\3\2\2\2\67\63\3\2\2\2"+
-		"8\t\3\2\2\2\5\23\37\67";
+		"\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3"+
+		"\5\3\5\3\5\5\5<\n\5\3\5\2\2\6\2\4\6\b\2\2C\2\n\3\2\2\2\4\23\3\2\2\2\6"+
+		"\37\3\2\2\2\b;\3\2\2\2\n\13\5\b\5\2\13\f\7\6\2\2\f\r\7\2\2\3\r\3\3\2\2"+
+		"\2\16\24\7\7\2\2\17\20\7\4\2\2\20\21\5\b\5\2\21\22\7\5\2\2\22\24\3\2\2"+
+		"\2\23\16\3\2\2\2\23\17\3\2\2\2\24\5\3\2\2\2\25 \5\4\3\2\26\27\7\b\2\2"+
+		"\27\30\7\21\2\2\30 \5\6\4\2\31\32\7\t\2\2\32\33\7\21\2\2\33 \5\6\4\2\34"+
+		"\35\7\17\2\2\35\36\7\21\2\2\36 \5\6\4\2\37\25\3\2\2\2\37\26\3\2\2\2\37"+
+		"\31\3\2\2\2\37\34\3\2\2\2 \7\3\2\2\2!<\5\6\4\2\"#\5\6\4\2#$\7\n\2\2$%"+
+		"\7\21\2\2%&\5\6\4\2&<\3\2\2\2\'(\5\6\4\2()\7\n\2\2)*\5\6\4\2*<\3\2\2\2"+
+		"+,\5\6\4\2,-\7\13\2\2-.\5\6\4\2.<\3\2\2\2/\60\5\6\4\2\60\61\7\f\2\2\61"+
+		"\62\5\6\4\2\62<\3\2\2\2\63\64\5\6\4\2\64\65\7\r\2\2\65\66\5\6\4\2\66<"+
+		"\3\2\2\2\678\5\6\4\289\7\16\2\29:\5\6\4\2:<\3\2\2\2;!\3\2\2\2;\"\3\2\2"+
+		"\2;\'\3\2\2\2;+\3\2\2\2;/\3\2\2\2;\63\3\2\2\2;\67\3\2\2\2<\t\3\2\2\2\5"+
+		"\23\37;";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

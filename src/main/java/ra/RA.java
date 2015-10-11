@@ -14,30 +14,37 @@ import java.util.Properties;
  */
 public class RA {
     public static void main(String[] args) {
-        // Test DB
-        Connection conn = connectToDB();
-        try {
-            Statement st = conn.createStatement();
-            st.execute("SELECT row_to_json(t) FROM (SELECT * FROM Serves) t;");
-            ResultSet rs = st.getResultSet();
-            while (rs.next()) {
-                System.out.println(rs.getString(1));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+//        Test DB
+//        Connection conn = connectToDB();
+//        try {
+//            Statement st = conn.createStatement();
+//            st.execute("SELECT row_to_json(t) FROM (SELECT * FROM Serves) t;");
+//            ResultSet rs = st.getResultSet();
+//            while (rs.next()) {
+//                System.out.println(rs.getString(1));
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
 
         // Test AST
-        ANTLRInputStream inputStream = new ANTLRInputStream("\\select_{test=test1} Likes;");
+        ANTLRInputStream inputStream = new ANTLRInputStream("\\select_{bar = 'James Joyce Pub'} Serves;");
         RAGrammarLexer lexer = new RAGrammarLexer(inputStream);
         CommonTokenStream tokenStream = new CommonTokenStream(lexer);
         RAGrammarParser parser = new RAGrammarParser(tokenStream);
 
         try {
             ParseTree tree = parser.exp0();
-            System.out.println("value = ");
-            System.out.println(new RAEvalVisitor().visit(tree));
+            String query = new RAEvalVisitor().visit(tree);
+            System.out.println("Query is: " + query);
 
+            Connection conn = connectToDB();
+            Statement st = conn.createStatement();
+            st.execute(query);
+            ResultSet rs = st.getResultSet();
+            while (rs.next()) {
+                System.out.println(rs.getString(1));
+            }
         } catch (Exception e) {
             System.out.println(e.toString());
         }
