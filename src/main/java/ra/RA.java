@@ -28,7 +28,14 @@ public class RA {
 //        }
 
         // Test AST
-        ANTLRInputStream inputStream = new ANTLRInputStream("\\select_{bar = 'James Joyce Pub'} Serves;");
+        ANTLRInputStream inputStream = new ANTLRInputStream("\\project_{drinker} (\n" +
+                "\t\\select_{beer='Amstel'} Likes\t\n" +
+                "\t)\n" +
+                "\\diff\n" +
+                "\\project_{drinker} (\n" +
+                "\t\\select_{beer='Corona'} Likes\n" +
+                "\t)\n" +
+                ";");
         RAGrammarLexer lexer = new RAGrammarLexer(inputStream);
         CommonTokenStream tokenStream = new CommonTokenStream(lexer);
         RAGrammarParser parser = new RAGrammarParser(tokenStream);
@@ -42,9 +49,8 @@ public class RA {
             Statement st = conn.createStatement();
             st.execute(query);
             ResultSet rs = st.getResultSet();
-            while (rs.next()) {
-                System.out.println(rs.getString(1));
-            }
+
+            printResultSet(rs);
         } catch (Exception e) {
             System.out.println(e.toString());
         }
@@ -63,5 +69,25 @@ public class RA {
         }
 
         return null;
+    }
+
+    public static void printResultSet(ResultSet rs) {
+        try {
+            ResultSetMetaData md = rs.getMetaData();
+            int numCols = md.getColumnCount();
+            for (int i = 1; i <= numCols; i++) {
+                System.out.print(md.getColumnName(i) + " ");
+            }
+            System.out.println();
+
+            while (rs.next()) {
+                for (int i = 1; i <= numCols; i++) {
+                    System.out.print(rs.getString(i) + " ");
+                }
+                System.out.println();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }
