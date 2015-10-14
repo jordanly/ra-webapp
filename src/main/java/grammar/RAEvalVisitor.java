@@ -66,7 +66,16 @@ public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
 
     @Override
     public String visitBinaryExp(RAGrammarParser.BinaryExpContext ctx) {
-        return super.visitBinaryExp(ctx);
+        StringBuilder output = new StringBuilder();
+        String operation = ctx.getChild(1).getText();
+
+        switch (operation) {
+            case "\\join":
+                break; // TODO
+        }
+
+        return ""; // TODO
+
     }
 
     private String extractOperatorOption(String val) {
