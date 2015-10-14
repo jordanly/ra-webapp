@@ -20,3 +20,8 @@ CREATE DATABASE
 CREATE USER
 GRANT PRIVILEGES
 Connect to connection string in Java
+
+NOTES
+=====
+We need to generate aliases when using FROM in some cases. Will probably just
+generate aliases everywhere we use FROM

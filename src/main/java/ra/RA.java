@@ -43,7 +43,7 @@ public class RA {
         try {
             ParseTree tree = parser.exp0();
             String query = new RAEvalVisitor().visit(tree);
-            System.out.println("Query is: " + query);
+            System.out.println(query);
 
             Connection conn = connectToDB();
             Statement st = conn.createStatement();

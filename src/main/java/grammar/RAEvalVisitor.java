@@ -18,7 +18,7 @@ public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
     @Override
     public String visitExp0(RAGrammarParser.Exp0Context ctx) {
         usedTempNumbers.clear();
-        return visit(ctx.getChild(0)); // Return value from final exp
+        return "SELECT * FROM " +  visit(ctx.getChild(0)) + ";"; // Return value from final exp
     }
 
     @Override
@@ -41,6 +41,7 @@ public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
         StringBuilder output = new StringBuilder();
 
         String operation = ctx.getChild(0).getText(); // Operation is first child always
+        output.append("( "); // TODO should i alias every unary exp (see wtf aliases)
         switch (operation) {
             case "\\select":
                 output.append("SELECT * FROM ");
@@ -55,11 +56,11 @@ public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
                 output.append(extractOperatorOption(ctx.getChild(1).getText()));
                 output.append(" FROM ");
                 output.append(visit(ctx.getChild(2)));
-                output.append(" " + generateAlias(random));
                 break;
             case "\\rename":
                 output.append("..."); // TODO get column names and rename
         }
+        output.append(" ) " + generateAlias(random)); // TODO wtf aliases
 
         return output.toString();
     }
@@ -79,7 +80,7 @@ public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
         StringBuilder output = new StringBuilder();
         String operation = ctx.getChild(1).getText();
 
-        output.append("( " + visit(ctx.getChild(0)) + " )");
+        output.append(visit(ctx.getChild(0))); // unary exp
         switch (operation) {
             case "\\join":
                 output.append(" NATURAL JOIN ");
@@ -97,7 +98,7 @@ public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
                 output.append(" INTERSECT ");
                 break;
         }
-        output.append("( " + visit(ctx.getChild(2)) + " )");
+        output.append(visit(ctx.getChild(2))); // unary exp
 
         return output.toString();
     }
