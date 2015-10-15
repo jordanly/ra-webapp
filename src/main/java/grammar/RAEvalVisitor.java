@@ -83,7 +83,18 @@ public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
 
     @Override
     public String visitJoinExp(RAGrammarParser.JoinExpContext ctx) {
-        return super.visitJoinExp(ctx);
+        StringBuilder output = new StringBuilder();
+
+        // TODO multiple conditions such as AND/OR
+        String left = visit(ctx.getChild(0));
+        String condition = extractOperatorOption(ctx.getChild(2).getText());
+        String right = visit(ctx.getChild(3));
+        output.append(String.format("( %s ) %s JOIN ( %s ) %s ON ( %s )",
+                left, generateAlias(random),
+                right, generateAlias(random),
+                condition));
+
+        return output.toString();
     }
 
     @Override

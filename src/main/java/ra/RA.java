@@ -14,28 +14,14 @@ import java.util.Properties;
  */
 public class RA {
     public static void main(String[] args) {
-//        Test DB
-//        Connection conn = connectToDB();
-//        try {
-//            Statement st = conn.createStatement();
-//            st.execute("SELECT row_to_json(t) FROM (SELECT * FROM Serves) t;");
-//            ResultSet rs = st.getResultSet();
-//            while (rs.next()) {
-//                System.out.println(rs.getString(1));
-//            }
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-
         // Test AST
-        ANTLRInputStream inputStream = new ANTLRInputStream("\\project_{drinker} (\n" +
-                "\t\\select_{beer='Amstel'} Likes\t\n" +
-                "\t)\n" +
+        ANTLRInputStream inputStream = new ANTLRInputStream("\\project_{name} Drinker\n" +
                 "\\diff\n" +
                 "\\project_{drinker} (\n" +
-                "\t\\select_{beer='Corona'} Likes\n" +
-                "\t)\n" +
-                ";");
+                "\t\\project_{drinker,bar} (Likes \\join Serves)\n" +
+                "\t\\diff\n" +
+                "\t\\project_{drinker,bar} Frequents\n" +
+                ");\n");
         RAGrammarLexer lexer = new RAGrammarLexer(inputStream);
         CommonTokenStream tokenStream = new CommonTokenStream(lexer);
         RAGrammarParser parser = new RAGrammarParser(tokenStream);
