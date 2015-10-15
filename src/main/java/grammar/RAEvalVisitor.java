@@ -18,7 +18,9 @@ public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
     @Override
     public String visitExp0(RAGrammarParser.Exp0Context ctx) {
         usedTempNumbers.clear();
-        return "SELECT * FROM " +  visit(ctx.getChild(0)) + ";"; // Return value from final exp
+        return "SELECT * FROM ( "
+                + visit(ctx.getChild(0))
+                + " ) " + generateAlias(random); // Return value from final exp
     }
 
     @Override
@@ -33,34 +35,43 @@ public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
 
     @Override
     public String visitUnitExp(RAGrammarParser.UnitExpContext ctx) {
-        return visit(ctx.getChild(0)); // Corresponds #unitExp directive not unit_exp rule
+        // Corresponds with #unitExp directive not unit_exp rule
+        return " ( SELECT * FROM "
+                + visit(ctx.getChild(0))
+                + " " + generateAlias(random) + " ) ";
+//        return visit(ctx.getChild(0));
     }
 
     @Override
     public String visitUnaryExp(RAGrammarParser.UnaryExpContext ctx) {
         StringBuilder output = new StringBuilder();
 
+        // TODO use string format as opposed to building from stringbuilder
         String operation = ctx.getChild(0).getText(); // Operation is first child always
-        output.append("( "); // TODO should i alias every unary exp (see wtf aliases)
         switch (operation) {
             case "\\select":
                 output.append("SELECT * FROM ");
+                output.append(" ( ");
                 output.append(visit(ctx.getChild(2)));
+                output.append(" ) " + generateAlias(random));
+
                 output.append(" WHERE ");
                 // Get select conditions (ie _{beer = 'Amstel'})
                 output.append(extractOperatorOption(ctx.getChild(1).getText()));
                 break;
             case "\\project":
-                output.append("SELECT ");
+                output.append("SELECT DISTINCT ");
                 // Get attribute list (ie _{ex1, ex2})
                 output.append(extractOperatorOption(ctx.getChild(1).getText()));
+
                 output.append(" FROM ");
+                output.append(" ( ");
                 output.append(visit(ctx.getChild(2)));
+                output.append(" ) " + generateAlias(random));
                 break;
             case "\\rename":
                 output.append("..."); // TODO get column names and rename
         }
-        output.append(" ) " + generateAlias(random)); // TODO wtf aliases
 
         return output.toString();
     }
@@ -80,7 +91,9 @@ public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
         StringBuilder output = new StringBuilder();
         String operation = ctx.getChild(1).getText();
 
-        output.append(visit(ctx.getChild(0))); // unary exp
+        output.append("SELECT * FROM ( "); // Surround first child and alias
+        output.append(visit(ctx.getChild(0)));
+        output.append(") " + generateAlias(random)); // End first child
         switch (operation) {
             case "\\join":
                 output.append(" NATURAL JOIN ");
@@ -98,7 +111,9 @@ public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
                 output.append(" INTERSECT ");
                 break;
         }
-        output.append(visit(ctx.getChild(2))); // unary exp
+        output.append("SELECT * FROM ( "); // Surround second child and alias
+        output.append(visit(ctx.getChild(2)));
+        output.append(" ) " + generateAlias(random)); // End second child
 
         return output.toString();
     }
