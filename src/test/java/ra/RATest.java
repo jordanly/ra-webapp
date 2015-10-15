@@ -6,7 +6,6 @@ import grammar.gen.RAGrammarParser;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.junit.Assert;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -14,6 +13,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -51,22 +51,142 @@ public class RATest {
 
     }
 
+    @org.junit.Test
+    public void testQueryB() throws Exception {
+        ANTLRInputStream inputStream = new ANTLRInputStream("\\project_{bar} (\n" +
+                "\t\\select_{drinker = 'Ben'} Frequents\n" +
+                ");");
+        RAGrammarLexer lexer = new RAGrammarLexer(inputStream);
+        CommonTokenStream tokenStream = new CommonTokenStream(lexer);
+        RAGrammarParser parser = new RAGrammarParser(tokenStream);
+
+        ParseTree tree = parser.exp0();
+        String query = new RAEvalVisitor().visit(tree);
+
+        Statement st = db.createStatement();
+        st.execute(query);
+        ResultSet rs = st.getResultSet();
+
+        String[][] ans = new String[][]{{"Satisfaction"}, {"Talk of the Town"}, {"James Joyce Pub"}};
+        // TODO still need to implement join on
+
+//        assertTrue(validateResultSet(rs, ans));
+    }
+
+    @org.junit.Test
+    public void testQueryC() throws Exception {
+        ANTLRInputStream inputStream = new ANTLRInputStream("\\project_{bar} (\n" +
+                "\t\\select_{drinker='Eve'} Likes\n" +
+                "\t\\join\n" +
+                "\t\\select_{price<=2.75} Serves\n" +
+                ");");
+        RAGrammarLexer lexer = new RAGrammarLexer(inputStream);
+        CommonTokenStream tokenStream = new CommonTokenStream(lexer);
+        RAGrammarParser parser = new RAGrammarParser(tokenStream);
+
+        ParseTree tree = parser.exp0();
+        String query = new RAEvalVisitor().visit(tree);
+
+        Statement st = db.createStatement();
+        st.execute(query);
+        ResultSet rs = st.getResultSet();
+
+        String[][] ans = new String[][]{{"Down Under Pub"}, {"Satisfaction"},
+                {"Talk of the Town"}, {"The Edge"}};
+
+        assertTrue(validateResultSet(rs, ans));
+    }
+
+    @org.junit.Test
+    public void testQueryD() throws Exception {
+        ANTLRInputStream inputStream = new ANTLRInputStream("\\project_{drinker} (\n" +
+                "\t\\select_{beer='Amstel'} Likes\t\n" +
+                "\t)\n" +
+                "\\diff\n" +
+                "\\project_{drinker} (\n" +
+                "\t\\select_{beer='Corona'} Likes\n" +
+                "\t)\n" +
+                ";");
+        RAGrammarLexer lexer = new RAGrammarLexer(inputStream);
+        CommonTokenStream tokenStream = new CommonTokenStream(lexer);
+        RAGrammarParser parser = new RAGrammarParser(tokenStream);
+
+        ParseTree tree = parser.exp0();
+        String query = new RAEvalVisitor().visit(tree);
+
+        Statement st = db.createStatement();
+        st.execute(query);
+        ResultSet rs = st.getResultSet();
+
+        String[][] ans = new String[][]{{"Ben"}};
+
+        assertTrue(validateResultSet(rs, ans));
+    }
+
+    @org.junit.Test
+    public void testQueryG() throws Exception {
+        ANTLRInputStream inputStream = new ANTLRInputStream("\\project_{drinker,bar} Frequents\n" +
+                "\\diff\n" +
+                "\\project_{drinker, bar}(\n" +
+                "\tLikes\n" +
+                "\t\\join\n" +
+                "\tServes\n" +
+                ")\n" +
+                ";");
+        RAGrammarLexer lexer = new RAGrammarLexer(inputStream);
+        CommonTokenStream tokenStream = new CommonTokenStream(lexer);
+        RAGrammarParser parser = new RAGrammarParser(tokenStream);
+
+        ParseTree tree = parser.exp0();
+        String query = new RAEvalVisitor().visit(tree);
+
+        Statement st = db.createStatement();
+        st.execute(query);
+        ResultSet rs = st.getResultSet();
+
+        String[][] ans = new String[][]{{"Coy", "The Edge"}, {"Coy", "Down Under Pub"}};
+
+        assertTrue(validateResultSet(rs, ans));
+    }
+
     private boolean validateResultSet(ResultSet rs, String[][] ans) throws Exception {
         ResultSetMetaData md = rs.getMetaData();
-        int index = 0;
         int numCols = md.getColumnCount();
+        List<List<String>> rows = new ArrayList<>();
         while (rs.next()) {
             List<String> line = new ArrayList<>();
             for (int i = 1; i <= numCols; i++) {
                 line.add(rs.getString(i));
             }
-            String[] out = line.toArray(new String[line.size()]);
+            rows.add(line);
+        }
 
-            if (!Arrays.equals(ans[index++], out)) {
-                return false;
-            }
+        String[][] out = new String[rows.size()][rows.get(0).size()];
+        for (int i = 0; i < out.length; i++) {
+            out[i] = rows.get(i).toArray(new String[out[0].length]);
+        }
+
+        Arrays.sort(ans, new StringMatrixComparator());
+        Arrays.sort(out, new StringMatrixComparator());
+
+        for (int i = 0; i < out.length; i++) {
+            Arrays.equals(ans[i], out[i]);
         }
 
         return true;
+    }
+
+    private class StringMatrixComparator implements Comparator<String[]> {
+
+        @Override
+        public int compare(String[] o1, String[] o2) {
+            for (int i = 0; i < Math.min(o1.length, o2.length); i++) {
+                int val = o1[i].compareTo(o2[i]);
+                if (val != 0) return val;
+            }
+
+            if (o1.length != o2.length) return o1.length - o2.length;
+            return 0;
+        }
     }
 }

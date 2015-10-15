@@ -28,9 +28,14 @@ public class RA {
 //        }
 
         // Test AST
-        ANTLRInputStream inputStream = new ANTLRInputStream("\\project_{bar} (\n" +
-                "\t\\select_{drinker = 'Ben'} Frequents\n" +
-                ");");
+        ANTLRInputStream inputStream = new ANTLRInputStream("\\project_{drinker} (\n" +
+                "\t\\select_{beer='Amstel'} Likes\t\n" +
+                "\t)\n" +
+                "\\diff\n" +
+                "\\project_{drinker} (\n" +
+                "\t\\select_{beer='Corona'} Likes\n" +
+                "\t)\n" +
+                ";");
         RAGrammarLexer lexer = new RAGrammarLexer(inputStream);
         CommonTokenStream tokenStream = new CommonTokenStream(lexer);
         RAGrammarParser parser = new RAGrammarParser(tokenStream);

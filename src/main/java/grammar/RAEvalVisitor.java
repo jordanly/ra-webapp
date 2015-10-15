@@ -91,29 +91,35 @@ public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
         StringBuilder output = new StringBuilder();
         String operation = ctx.getChild(1).getText();
 
-        output.append("SELECT * FROM ( "); // Surround first child and alias
-        output.append(visit(ctx.getChild(0)));
-        output.append(") " + generateAlias(random)); // End first child
+        String left = visit(ctx.getChild(0));
+        String right = visit(ctx.getChild(2));
         switch (operation) {
             case "\\join":
-                output.append(" NATURAL JOIN ");
+                output.append(String.format("( %s ) %s NATURAL JOIN ( %s ) %s",
+                        left, generateAlias(random),
+                        right, generateAlias(random)));
                 break;
             case "\\cross":
-                output.append(" CROSS JOIN ");
+                output.append(String.format("( %s ) %s CROSS JOIN ( %s ) %s",
+                        left, generateAlias(random),
+                        right, generateAlias(random)));
                 break;
             case "\\union":
-                output.append(" UNION ");
+                output.append(String.format("SELECT * FROM ( %s ) %s UNION SELECT * FROM ( %s ) %s",
+                        left, generateAlias(random),
+                        right, generateAlias(random)));
                 break;
             case "\\diff":
-                output.append(" EXCEPT ");
+                output.append(String.format("SELECT * FROM ( %s ) %s EXCEPT SELECT * FROM ( %s ) %s",
+                        left, generateAlias(random),
+                        right, generateAlias(random)));
                 break;
             case "\\intersect":
-                output.append(" INTERSECT ");
+                output.append(String.format("SELECT * FROM ( %s ) %s INTERSECT SELECT * FROM ( %s ) %s",
+                        left, generateAlias(random),
+                        right, generateAlias(random)));
                 break;
         }
-        output.append("SELECT * FROM ( "); // Surround second child and alias
-        output.append(visit(ctx.getChild(2)));
-        output.append(" ) " + generateAlias(random)); // End second child
 
         return output.toString();
     }
