@@ -114,7 +114,9 @@ public class RATest {
                 "    (\\rename_{bar1, beer1, price1} Serves \\cross\n" +
                 "     \\rename_{bar2, beer2, price2} Serves \\cross\n" +
                 "     \\rename_{bar3, beer3, price3} Serves);");
-        String[][] ans = new String[][]{{"Ben"}};
+        String[][] ans = new String[][]{{"Satisfaction", "Budweiser", "2.25"},
+                {"Down Under Pub", "Budweiser", "2.25"},
+                {"Talk of the Town", "Budweiser", "2.20"}};
 
         assertTrue(validateResultSet(rs, ans));
     }
@@ -201,8 +203,10 @@ public class RATest {
         Arrays.sort(ans, new StringMatrixComparator());
         Arrays.sort(out, new StringMatrixComparator());
 
-        for (int i = 0; i < out.length; i++) {
-            Arrays.equals(ans[i], out[i]);
+        for (int i = 0; i < ans.length; i++) {
+            if (!Arrays.equals(ans[i], out[i])) {
+                return false;
+            }
         }
 
         return true;

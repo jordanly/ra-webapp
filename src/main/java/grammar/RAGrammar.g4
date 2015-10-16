@@ -35,7 +35,7 @@ COMMENT : '/*' .*? '*/' -> channel(HIDDEN) ;
 exp0        : exp STATEMENT_TERMINATOR EOF ;
 
 exp_unit    : TABLE_NAME                                #tableExp
-            | LEFT_PAREN exp RIGHT_PAREN                #parenExp
+            | LEFT_PAREN exp1 RIGHT_PAREN                #parenExp
             ;
 
 exp_unary   : exp_unit                                  #unitExp
@@ -51,6 +51,15 @@ exp         : exp_unary                                 #singleUnaryExp
             | exp_unary UNION exp_unary                 #binaryExp
             | exp_unary DIFF exp_unary                  #binaryExp
             | exp_unary INTERSECT exp_unary             #binaryExp
+            ;
+
+exp1        : exp                                       #singleTermExp
+            | exp JOIN OPERATOR_OPTION exp_unary        #joinTermExp
+            | exp JOIN exp_unary                        #binaryTermExp
+            | exp CROSS exp_unary                       #binaryTermExp
+            | exp UNION exp_unary                       #binaryTermExp
+            | exp DIFF exp_unary                        #binaryTermExp
+            | exp INTERSECT exp_unary                   #binaryTermExp
             ;
 
 // ==========================================

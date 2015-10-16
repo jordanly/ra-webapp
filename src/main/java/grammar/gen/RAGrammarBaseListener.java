@@ -107,6 +107,42 @@ public class RAGrammarBaseListener implements RAGrammarListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitBinaryExp(RAGrammarParser.BinaryExpContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterSingleTermExp(RAGrammarParser.SingleTermExpContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitSingleTermExp(RAGrammarParser.SingleTermExpContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterJoinTermExp(RAGrammarParser.JoinTermExpContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitJoinTermExp(RAGrammarParser.JoinTermExpContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterBinaryTermExp(RAGrammarParser.BinaryTermExpContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitBinaryTermExp(RAGrammarParser.BinaryTermExpContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

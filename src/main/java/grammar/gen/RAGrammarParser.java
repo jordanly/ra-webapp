@@ -22,9 +22,9 @@ public class RAGrammarParser extends Parser {
 		RENAME=13, SQLEXEC=14, OPERATOR_OPTION=15, INSIDE_OPERATOR_OPTION=16, 
 		COMMENT=17;
 	public static final int
-		RULE_exp0 = 0, RULE_exp_unit = 1, RULE_exp_unary = 2, RULE_exp = 3;
+		RULE_exp0 = 0, RULE_exp_unit = 1, RULE_exp_unary = 2, RULE_exp = 3, RULE_exp1 = 4;
 	public static final String[] ruleNames = {
-		"exp0", "exp_unit", "exp_unary", "exp"
+		"exp0", "exp_unit", "exp_unary", "exp", "exp1"
 	};
 
 	private static final String[] _LITERAL_NAMES = {
@@ -116,11 +116,11 @@ public class RAGrammarParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(8);
-			exp();
-			setState(9);
-			match(STATEMENT_TERMINATOR);
 			setState(10);
+			exp();
+			setState(11);
+			match(STATEMENT_TERMINATOR);
+			setState(12);
 			match(EOF);
 			}
 		}
@@ -148,8 +148,8 @@ public class RAGrammarParser extends Parser {
 	}
 	public static class ParenExpContext extends Exp_unitContext {
 		public TerminalNode LEFT_PAREN() { return getToken(RAGrammarParser.LEFT_PAREN, 0); }
-		public ExpContext exp() {
-			return getRuleContext(ExpContext.class,0);
+		public Exp1Context exp1() {
+			return getRuleContext(Exp1Context.class,0);
 		}
 		public TerminalNode RIGHT_PAREN() { return getToken(RAGrammarParser.RIGHT_PAREN, 0); }
 		public ParenExpContext(Exp_unitContext ctx) { copyFrom(ctx); }
@@ -189,13 +189,13 @@ public class RAGrammarParser extends Parser {
 		Exp_unitContext _localctx = new Exp_unitContext(_ctx, getState());
 		enterRule(_localctx, 2, RULE_exp_unit);
 		try {
-			setState(17);
+			setState(19);
 			switch (_input.LA(1)) {
 			case TABLE_NAME:
 				_localctx = new TableExpContext(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(12);
+				setState(14);
 				match(TABLE_NAME);
 				}
 				break;
@@ -203,11 +203,11 @@ public class RAGrammarParser extends Parser {
 				_localctx = new ParenExpContext(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(13);
-				match(LEFT_PAREN);
-				setState(14);
-				exp();
 				setState(15);
+				match(LEFT_PAREN);
+				setState(16);
+				exp1();
+				setState(17);
 				match(RIGHT_PAREN);
 				}
 				break;
@@ -284,14 +284,14 @@ public class RAGrammarParser extends Parser {
 		Exp_unaryContext _localctx = new Exp_unaryContext(_ctx, getState());
 		enterRule(_localctx, 4, RULE_exp_unary);
 		try {
-			setState(29);
+			setState(31);
 			switch (_input.LA(1)) {
 			case LEFT_PAREN:
 			case TABLE_NAME:
 				_localctx = new UnitExpContext(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(19);
+				setState(21);
 				exp_unit();
 				}
 				break;
@@ -299,11 +299,11 @@ public class RAGrammarParser extends Parser {
 				_localctx = new UnaryExpContext(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(20);
-				match(SELECT);
-				setState(21);
-				match(OPERATOR_OPTION);
 				setState(22);
+				match(SELECT);
+				setState(23);
+				match(OPERATOR_OPTION);
+				setState(24);
 				exp_unary();
 				}
 				break;
@@ -311,11 +311,11 @@ public class RAGrammarParser extends Parser {
 				_localctx = new UnaryExpContext(_localctx);
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(23);
-				match(PROJECT);
-				setState(24);
-				match(OPERATOR_OPTION);
 				setState(25);
+				match(PROJECT);
+				setState(26);
+				match(OPERATOR_OPTION);
+				setState(27);
 				exp_unary();
 				}
 				break;
@@ -323,11 +323,11 @@ public class RAGrammarParser extends Parser {
 				_localctx = new UnaryExpContext(_localctx);
 				enterOuterAlt(_localctx, 4);
 				{
-				setState(26);
-				match(RENAME);
-				setState(27);
-				match(OPERATOR_OPTION);
 				setState(28);
+				match(RENAME);
+				setState(29);
+				match(OPERATOR_OPTION);
+				setState(30);
 				exp_unary();
 				}
 				break;
@@ -432,13 +432,13 @@ public class RAGrammarParser extends Parser {
 		ExpContext _localctx = new ExpContext(_ctx, getState());
 		enterRule(_localctx, 6, RULE_exp);
 		try {
-			setState(57);
+			setState(59);
 			switch ( getInterpreter().adaptivePredict(_input,2,_ctx) ) {
 			case 1:
 				_localctx = new SingleUnaryExpContext(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(31);
+				setState(33);
 				exp_unary();
 				}
 				break;
@@ -446,13 +446,13 @@ public class RAGrammarParser extends Parser {
 				_localctx = new JoinExpContext(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(32);
-				exp_unary();
-				setState(33);
-				match(JOIN);
 				setState(34);
-				match(OPERATOR_OPTION);
+				exp_unary();
 				setState(35);
+				match(JOIN);
+				setState(36);
+				match(OPERATOR_OPTION);
+				setState(37);
 				exp_unary();
 				}
 				break;
@@ -460,11 +460,11 @@ public class RAGrammarParser extends Parser {
 				_localctx = new BinaryExpContext(_localctx);
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(37);
-				exp_unary();
-				setState(38);
-				match(JOIN);
 				setState(39);
+				exp_unary();
+				setState(40);
+				match(JOIN);
+				setState(41);
 				exp_unary();
 				}
 				break;
@@ -472,11 +472,11 @@ public class RAGrammarParser extends Parser {
 				_localctx = new BinaryExpContext(_localctx);
 				enterOuterAlt(_localctx, 4);
 				{
-				setState(41);
-				exp_unary();
-				setState(42);
-				match(CROSS);
 				setState(43);
+				exp_unary();
+				setState(44);
+				match(CROSS);
+				setState(45);
 				exp_unary();
 				}
 				break;
@@ -484,11 +484,11 @@ public class RAGrammarParser extends Parser {
 				_localctx = new BinaryExpContext(_localctx);
 				enterOuterAlt(_localctx, 5);
 				{
-				setState(45);
-				exp_unary();
-				setState(46);
-				match(UNION);
 				setState(47);
+				exp_unary();
+				setState(48);
+				match(UNION);
+				setState(49);
 				exp_unary();
 				}
 				break;
@@ -496,11 +496,11 @@ public class RAGrammarParser extends Parser {
 				_localctx = new BinaryExpContext(_localctx);
 				enterOuterAlt(_localctx, 6);
 				{
-				setState(49);
-				exp_unary();
-				setState(50);
-				match(DIFF);
 				setState(51);
+				exp_unary();
+				setState(52);
+				match(DIFF);
+				setState(53);
 				exp_unary();
 				}
 				break;
@@ -508,11 +508,194 @@ public class RAGrammarParser extends Parser {
 				_localctx = new BinaryExpContext(_localctx);
 				enterOuterAlt(_localctx, 7);
 				{
-				setState(53);
-				exp_unary();
-				setState(54);
-				match(INTERSECT);
 				setState(55);
+				exp_unary();
+				setState(56);
+				match(INTERSECT);
+				setState(57);
+				exp_unary();
+				}
+				break;
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class Exp1Context extends ParserRuleContext {
+		public Exp1Context(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_exp1; }
+	 
+		public Exp1Context() { }
+		public void copyFrom(Exp1Context ctx) {
+			super.copyFrom(ctx);
+		}
+	}
+	public static class BinaryTermExpContext extends Exp1Context {
+		public ExpContext exp() {
+			return getRuleContext(ExpContext.class,0);
+		}
+		public TerminalNode JOIN() { return getToken(RAGrammarParser.JOIN, 0); }
+		public Exp_unaryContext exp_unary() {
+			return getRuleContext(Exp_unaryContext.class,0);
+		}
+		public TerminalNode CROSS() { return getToken(RAGrammarParser.CROSS, 0); }
+		public TerminalNode UNION() { return getToken(RAGrammarParser.UNION, 0); }
+		public TerminalNode DIFF() { return getToken(RAGrammarParser.DIFF, 0); }
+		public TerminalNode INTERSECT() { return getToken(RAGrammarParser.INTERSECT, 0); }
+		public BinaryTermExpContext(Exp1Context ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof RAGrammarListener ) ((RAGrammarListener)listener).enterBinaryTermExp(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof RAGrammarListener ) ((RAGrammarListener)listener).exitBinaryTermExp(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof RAGrammarVisitor ) return ((RAGrammarVisitor<? extends T>)visitor).visitBinaryTermExp(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class JoinTermExpContext extends Exp1Context {
+		public ExpContext exp() {
+			return getRuleContext(ExpContext.class,0);
+		}
+		public TerminalNode JOIN() { return getToken(RAGrammarParser.JOIN, 0); }
+		public TerminalNode OPERATOR_OPTION() { return getToken(RAGrammarParser.OPERATOR_OPTION, 0); }
+		public Exp_unaryContext exp_unary() {
+			return getRuleContext(Exp_unaryContext.class,0);
+		}
+		public JoinTermExpContext(Exp1Context ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof RAGrammarListener ) ((RAGrammarListener)listener).enterJoinTermExp(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof RAGrammarListener ) ((RAGrammarListener)listener).exitJoinTermExp(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof RAGrammarVisitor ) return ((RAGrammarVisitor<? extends T>)visitor).visitJoinTermExp(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class SingleTermExpContext extends Exp1Context {
+		public ExpContext exp() {
+			return getRuleContext(ExpContext.class,0);
+		}
+		public SingleTermExpContext(Exp1Context ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof RAGrammarListener ) ((RAGrammarListener)listener).enterSingleTermExp(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof RAGrammarListener ) ((RAGrammarListener)listener).exitSingleTermExp(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof RAGrammarVisitor ) return ((RAGrammarVisitor<? extends T>)visitor).visitSingleTermExp(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final Exp1Context exp1() throws RecognitionException {
+		Exp1Context _localctx = new Exp1Context(_ctx, getState());
+		enterRule(_localctx, 8, RULE_exp1);
+		try {
+			setState(87);
+			switch ( getInterpreter().adaptivePredict(_input,3,_ctx) ) {
+			case 1:
+				_localctx = new SingleTermExpContext(_localctx);
+				enterOuterAlt(_localctx, 1);
+				{
+				setState(61);
+				exp();
+				}
+				break;
+			case 2:
+				_localctx = new JoinTermExpContext(_localctx);
+				enterOuterAlt(_localctx, 2);
+				{
+				setState(62);
+				exp();
+				setState(63);
+				match(JOIN);
+				setState(64);
+				match(OPERATOR_OPTION);
+				setState(65);
+				exp_unary();
+				}
+				break;
+			case 3:
+				_localctx = new BinaryTermExpContext(_localctx);
+				enterOuterAlt(_localctx, 3);
+				{
+				setState(67);
+				exp();
+				setState(68);
+				match(JOIN);
+				setState(69);
+				exp_unary();
+				}
+				break;
+			case 4:
+				_localctx = new BinaryTermExpContext(_localctx);
+				enterOuterAlt(_localctx, 4);
+				{
+				setState(71);
+				exp();
+				setState(72);
+				match(CROSS);
+				setState(73);
+				exp_unary();
+				}
+				break;
+			case 5:
+				_localctx = new BinaryTermExpContext(_localctx);
+				enterOuterAlt(_localctx, 5);
+				{
+				setState(75);
+				exp();
+				setState(76);
+				match(UNION);
+				setState(77);
+				exp_unary();
+				}
+				break;
+			case 6:
+				_localctx = new BinaryTermExpContext(_localctx);
+				enterOuterAlt(_localctx, 6);
+				{
+				setState(79);
+				exp();
+				setState(80);
+				match(DIFF);
+				setState(81);
+				exp_unary();
+				}
+				break;
+			case 7:
+				_localctx = new BinaryTermExpContext(_localctx);
+				enterOuterAlt(_localctx, 7);
+				{
+				setState(83);
+				exp();
+				setState(84);
+				match(INTERSECT);
+				setState(85);
 				exp_unary();
 				}
 				break;
@@ -530,23 +713,29 @@ public class RAGrammarParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3\23>\4\2\t\2\4\3\t"+
-		"\3\4\4\t\4\4\5\t\5\3\2\3\2\3\2\3\2\3\3\3\3\3\3\3\3\3\3\5\3\24\n\3\3\4"+
-		"\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\5\4 \n\4\3\5\3\5\3\5\3\5\3\5\3\5"+
+		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3\23\\\4\2\t\2\4\3"+
+		"\t\3\4\4\t\4\4\5\t\5\4\6\t\6\3\2\3\2\3\2\3\2\3\3\3\3\3\3\3\3\3\3\5\3\26"+
+		"\n\3\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\5\4\"\n\4\3\5\3\5\3\5\3\5"+
 		"\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3"+
-		"\5\3\5\3\5\5\5<\n\5\3\5\2\2\6\2\4\6\b\2\2C\2\n\3\2\2\2\4\23\3\2\2\2\6"+
-		"\37\3\2\2\2\b;\3\2\2\2\n\13\5\b\5\2\13\f\7\6\2\2\f\r\7\2\2\3\r\3\3\2\2"+
-		"\2\16\24\7\7\2\2\17\20\7\4\2\2\20\21\5\b\5\2\21\22\7\5\2\2\22\24\3\2\2"+
-		"\2\23\16\3\2\2\2\23\17\3\2\2\2\24\5\3\2\2\2\25 \5\4\3\2\26\27\7\b\2\2"+
-		"\27\30\7\21\2\2\30 \5\6\4\2\31\32\7\t\2\2\32\33\7\21\2\2\33 \5\6\4\2\34"+
-		"\35\7\17\2\2\35\36\7\21\2\2\36 \5\6\4\2\37\25\3\2\2\2\37\26\3\2\2\2\37"+
-		"\31\3\2\2\2\37\34\3\2\2\2 \7\3\2\2\2!<\5\6\4\2\"#\5\6\4\2#$\7\n\2\2$%"+
-		"\7\21\2\2%&\5\6\4\2&<\3\2\2\2\'(\5\6\4\2()\7\n\2\2)*\5\6\4\2*<\3\2\2\2"+
-		"+,\5\6\4\2,-\7\13\2\2-.\5\6\4\2.<\3\2\2\2/\60\5\6\4\2\60\61\7\f\2\2\61"+
-		"\62\5\6\4\2\62<\3\2\2\2\63\64\5\6\4\2\64\65\7\r\2\2\65\66\5\6\4\2\66<"+
-		"\3\2\2\2\678\5\6\4\289\7\16\2\29:\5\6\4\2:<\3\2\2\2;!\3\2\2\2;\"\3\2\2"+
-		"\2;\'\3\2\2\2;+\3\2\2\2;/\3\2\2\2;\63\3\2\2\2;\67\3\2\2\2<\t\3\2\2\2\5"+
-		"\23\37;";
+		"\5\3\5\3\5\3\5\3\5\5\5>\n\5\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3"+
+		"\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\5\6Z\n"+
+		"\6\3\6\2\2\7\2\4\6\b\n\2\2f\2\f\3\2\2\2\4\25\3\2\2\2\6!\3\2\2\2\b=\3\2"+
+		"\2\2\nY\3\2\2\2\f\r\5\b\5\2\r\16\7\6\2\2\16\17\7\2\2\3\17\3\3\2\2\2\20"+
+		"\26\7\7\2\2\21\22\7\4\2\2\22\23\5\n\6\2\23\24\7\5\2\2\24\26\3\2\2\2\25"+
+		"\20\3\2\2\2\25\21\3\2\2\2\26\5\3\2\2\2\27\"\5\4\3\2\30\31\7\b\2\2\31\32"+
+		"\7\21\2\2\32\"\5\6\4\2\33\34\7\t\2\2\34\35\7\21\2\2\35\"\5\6\4\2\36\37"+
+		"\7\17\2\2\37 \7\21\2\2 \"\5\6\4\2!\27\3\2\2\2!\30\3\2\2\2!\33\3\2\2\2"+
+		"!\36\3\2\2\2\"\7\3\2\2\2#>\5\6\4\2$%\5\6\4\2%&\7\n\2\2&\'\7\21\2\2\'("+
+		"\5\6\4\2(>\3\2\2\2)*\5\6\4\2*+\7\n\2\2+,\5\6\4\2,>\3\2\2\2-.\5\6\4\2."+
+		"/\7\13\2\2/\60\5\6\4\2\60>\3\2\2\2\61\62\5\6\4\2\62\63\7\f\2\2\63\64\5"+
+		"\6\4\2\64>\3\2\2\2\65\66\5\6\4\2\66\67\7\r\2\2\678\5\6\4\28>\3\2\2\29"+
+		":\5\6\4\2:;\7\16\2\2;<\5\6\4\2<>\3\2\2\2=#\3\2\2\2=$\3\2\2\2=)\3\2\2\2"+
+		"=-\3\2\2\2=\61\3\2\2\2=\65\3\2\2\2=9\3\2\2\2>\t\3\2\2\2?Z\5\b\5\2@A\5"+
+		"\b\5\2AB\7\n\2\2BC\7\21\2\2CD\5\6\4\2DZ\3\2\2\2EF\5\b\5\2FG\7\n\2\2GH"+
+		"\5\6\4\2HZ\3\2\2\2IJ\5\b\5\2JK\7\13\2\2KL\5\6\4\2LZ\3\2\2\2MN\5\b\5\2"+
+		"NO\7\f\2\2OP\5\6\4\2PZ\3\2\2\2QR\5\b\5\2RS\7\r\2\2ST\5\6\4\2TZ\3\2\2\2"+
+		"UV\5\b\5\2VW\7\16\2\2WX\5\6\4\2XZ\3\2\2\2Y?\3\2\2\2Y@\3\2\2\2YE\3\2\2"+
+		"\2YI\3\2\2\2YM\3\2\2\2YQ\3\2\2\2YU\3\2\2\2Z\13\3\2\2\2\6\25!=Y";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

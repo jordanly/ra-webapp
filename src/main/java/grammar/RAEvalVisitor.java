@@ -172,6 +172,54 @@ public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
         return output.toString();
     }
 
+    @Override
+    public String visitSingleTermExp(RAGrammarParser.SingleTermExpContext ctx) {
+        return visit(ctx.getChild(0));
+    }
+
+    @Override
+    public String visitJoinTermExp(RAGrammarParser.JoinTermExpContext ctx) {
+        return visitChildren(ctx); // TODO
+    }
+
+    @Override
+    public String visitBinaryTermExp(RAGrammarParser.BinaryTermExpContext ctx) {
+        StringBuilder output = new StringBuilder(); // TODO refactor, duplicate code with binaryExp
+        String operation = ctx.getChild(1).getText();
+
+        String left = visit(ctx.getChild(0));
+        String right = visit(ctx.getChild(2));
+        switch (operation) {
+            case "\\join":
+                output.append(String.format("( %s ) %s NATURAL JOIN ( %s ) %s",
+                        left, generateAlias(random),
+                        right, generateAlias(random)));
+                break;
+            case "\\cross":
+                output.append(String.format("( %s ) %s CROSS JOIN ( %s ) %s",
+                        left, generateAlias(random),
+                        right, generateAlias(random)));
+                break;
+            case "\\union":
+                output.append(String.format("SELECT * FROM ( %s ) %s UNION SELECT * FROM ( %s ) %s",
+                        left, generateAlias(random),
+                        right, generateAlias(random)));
+                break;
+            case "\\diff":
+                output.append(String.format("SELECT * FROM ( %s ) %s EXCEPT SELECT * FROM ( %s ) %s",
+                        left, generateAlias(random),
+                        right, generateAlias(random)));
+                break;
+            case "\\intersect":
+                output.append(String.format("SELECT * FROM ( %s ) %s INTERSECT SELECT * FROM ( %s ) %s",
+                        left, generateAlias(random),
+                        right, generateAlias(random)));
+                break;
+        }
+
+        return output.toString();
+    }
+
     private String generateAlias(Random rand) {
         int newVal;
         do {

@@ -65,4 +65,25 @@ public interface RAGrammarVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitBinaryExp(RAGrammarParser.BinaryExpContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code singleTermExp}
+	 * labeled alternative in {@link RAGrammarParser#exp1}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSingleTermExp(RAGrammarParser.SingleTermExpContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code joinTermExp}
+	 * labeled alternative in {@link RAGrammarParser#exp1}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitJoinTermExp(RAGrammarParser.JoinTermExpContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code binaryTermExp}
+	 * labeled alternative in {@link RAGrammarParser#exp1}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBinaryTermExp(RAGrammarParser.BinaryTermExpContext ctx);
 }

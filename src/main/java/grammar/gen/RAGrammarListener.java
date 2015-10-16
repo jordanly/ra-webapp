@@ -101,4 +101,40 @@ public interface RAGrammarListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitBinaryExp(RAGrammarParser.BinaryExpContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code singleTermExp}
+	 * labeled alternative in {@link RAGrammarParser#exp1}.
+	 * @param ctx the parse tree
+	 */
+	void enterSingleTermExp(RAGrammarParser.SingleTermExpContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code singleTermExp}
+	 * labeled alternative in {@link RAGrammarParser#exp1}.
+	 * @param ctx the parse tree
+	 */
+	void exitSingleTermExp(RAGrammarParser.SingleTermExpContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code joinTermExp}
+	 * labeled alternative in {@link RAGrammarParser#exp1}.
+	 * @param ctx the parse tree
+	 */
+	void enterJoinTermExp(RAGrammarParser.JoinTermExpContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code joinTermExp}
+	 * labeled alternative in {@link RAGrammarParser#exp1}.
+	 * @param ctx the parse tree
+	 */
+	void exitJoinTermExp(RAGrammarParser.JoinTermExpContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code binaryTermExp}
+	 * labeled alternative in {@link RAGrammarParser#exp1}.
+	 * @param ctx the parse tree
+	 */
+	void enterBinaryTermExp(RAGrammarParser.BinaryTermExpContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code binaryTermExp}
+	 * labeled alternative in {@link RAGrammarParser#exp1}.
+	 * @param ctx the parse tree
+	 */
+	void exitBinaryTermExp(RAGrammarParser.BinaryTermExpContext ctx);
 }
