@@ -8,10 +8,14 @@ import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
-        Configuration viewDir = new Configuration();
-        viewDir.setClassForTemplateLoading(Main.class, "/templates");
+        staticFileLocation("/public");
 
-        get("/hello", (req, res) -> {
+        Configuration viewDir = new Configuration();
+        viewDir.setClassForTemplateLoading(Main.class, "/templates/");
+
+//        port(8000);
+
+        get("/", (req, res) -> {
             return new ModelAndView(new HashMap<String, Object>(), "frontend.ftl");
         }, new FreeMarkerEngine(viewDir));
     }
