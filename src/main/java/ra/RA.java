@@ -15,13 +15,7 @@ import java.util.Properties;
 public class RA {
     public static void main(String[] args) {
         // Test AST
-        ANTLRInputStream inputStream = new ANTLRInputStream("\\project_{name} Drinker\n" +
-                "\\diff\n" +
-                "\\project_{drinker} (\n" +
-                "\t\\project_{drinker,bar} (Likes \\join Serves)\n" +
-                "\t\\diff\n" +
-                "\t\\project_{drinker,bar} Frequents\n" +
-                ");\n");
+        ANTLRInputStream inputStream = new ANTLRInputStream("Likes \\diff Likes \\diff Likes;");
         RAGrammarLexer lexer = new RAGrammarLexer(inputStream);
         CommonTokenStream tokenStream = new CommonTokenStream(lexer);
         RAGrammarParser parser = new RAGrammarParser(tokenStream);

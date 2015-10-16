@@ -96,7 +96,11 @@ public class RATest {
                 "\t\\join\n" +
                 "\t\\select_{drinker='Dan'} Likes\n" +
                 ");\n");
-        String[][] ans = new String[][]{{"Ben"}};
+        String[][] ans = new String[][]{{"James Joyce Pub", "Erdinger"},
+                {"Satisfaction", "Corona"},
+                {"Satisfaction", "Dixie"},
+                {"Talk of the Town", "Amstel"},
+                {"Talk of the Town", "Budweiser"}};
 
         assertTrue(validateResultSet(rs, ans));
     }

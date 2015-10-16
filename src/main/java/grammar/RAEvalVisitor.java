@@ -1,8 +1,17 @@
 package grammar;
 
 import grammar.gen.RAGrammarBaseVisitor;
+import grammar.gen.RAGrammarLexer;
 import grammar.gen.RAGrammarParser;
+import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.tree.ParseTree;
+import ra.RA;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.Statement;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
@@ -13,7 +22,6 @@ import java.util.Set;
 public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
     private Random random = new Random(12345);
     private Set<Integer> usedTempNumbers = new HashSet<>();
-
 
     @Override
     public String visitExp0(RAGrammarParser.Exp0Context ctx) {
@@ -46,7 +54,6 @@ public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
     public String visitUnaryExp(RAGrammarParser.UnaryExpContext ctx) {
         StringBuilder output = new StringBuilder();
 
-        // TODO use string format as opposed to building from stringbuilder
         String operation = ctx.getChild(0).getText(); // Operation is first child always
         switch (operation) {
             case "\\select":
@@ -70,7 +77,37 @@ public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
                 output.append(" ) " + generateAlias(random));
                 break;
             case "\\rename":
-                output.append("..."); // TODO get column names and rename
+                // Get column names so we can rename them
+                // TODO replace with call to RA?
+                String subQuery = "SELECT * FROM ( "
+                        + visit(ctx.getChild(2))
+                        + " ) " + generateAlias(random) + " ; ";
+
+                ResultSetMetaData rsmd;
+                try { // TODO throw error?
+                    Connection conn = RA.connectToDB();
+                    Statement st = conn.createStatement();
+                    st.execute(subQuery);
+                    ResultSet rs = st.getResultSet();
+                    rsmd = rs.getMetaData();
+
+                    String[] newNames = extractOperatorOption(ctx.getChild(1).getText()).split(",");
+
+                    output.append("SELECT ");
+                    for (int i = 0; i < newNames.length; i++) {
+                        output.append(rsmd.getColumnName(i + 1) + " AS " + newNames[i] + ",");
+                    }
+                    output.deleteCharAt(output.length() - 1); // delete last ,
+
+                    output.append(" FROM ");
+                    output.append(" ( ");
+                    output.append(visit(ctx.getChild(2)));
+                    output.append(" ) " + generateAlias(random));
+                } catch (Exception e) {
+                    System.out.println(e.toString());
+                    return "ERROR"; // TODO better error response
+                }
+                break;
         }
 
         return output.toString();
