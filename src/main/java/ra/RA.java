@@ -13,48 +13,54 @@ import java.util.Properties;
  * Created by jordanly on 10/6/15.
  */
 public class RA {
-    public static void main(String[] args) {
-        // Test AST
-        ANTLRInputStream inputStream = new ANTLRInputStream("Serves\n" +
-                "\\diff\n" +
-                "\\project_{bar3,beer3,price3}\n" +
-                "  \\select_{price1 < price2 and price2 < price3}\n" +
-                "    (\\rename_{bar1, beer1, price1} Serves \\cross\n" +
-                "     \\rename_{bar2, beer2, price2} Serves \\cross\n" +
-                "     \\rename_{bar3, beer3, price3} Serves);");
+    // TODO read these from config
+    public static String CONNECTION_STRING = "jdbc:postgresql:beers";
+    public static String DB_USER = "raservice";
+    public static String DB_PASSWORD = "test";
+
+    private Connection dbConnection;
+
+    public RA() {
+        this.dbConnection = createDBConnection(CONNECTION_STRING, DB_USER, DB_PASSWORD);
+    }
+
+    public ResultSet evaluate(String raQuery) {
+        ANTLRInputStream inputStream = new ANTLRInputStream(raQuery);
         RAGrammarLexer lexer = new RAGrammarLexer(inputStream);
         CommonTokenStream tokenStream = new CommonTokenStream(lexer);
         RAGrammarParser parser = new RAGrammarParser(tokenStream);
 
-        try {
-            ParseTree tree = parser.exp0();
-            String query = new RAEvalVisitor().visit(tree);
-            System.out.println(query);
+        ParseTree tree = parser.exp0();
+        String sqlQuery = new RAEvalVisitor(this).visit(tree);
 
-            Connection conn = connectToDB();
-            Statement st = conn.createStatement();
-            st.execute(query);
-            ResultSet rs = st.getResultSet();
-
-            printResultSet(rs);
-        } catch (Exception e) {
-            System.out.println(e.toString());
-        }
+        return queryDB(sqlQuery);
     }
 
-    public static Connection connectToDB() {
-        String connString = "jdbc:postgresql:beers";
-        Properties prop = new Properties();
-        prop.setProperty("user", "raservice");
-        prop.setProperty("password", "test");
+    public ResultSet queryDB(String sqlQuery) {
         try {
-            Connection conn = DriverManager.getConnection(connString, prop);
-            return conn;
+            Statement st = dbConnection.createStatement();
+            st.execute(sqlQuery);
+
+            return st.getResultSet();
+        } catch (Exception e) {
+            System.out.println(e.toString()); // TODO could not query db
+        }
+
+        return null;
+    }
+
+    private Connection createDBConnection(String connString, String user, String pass) {
+        Properties prop = new Properties();
+        prop.setProperty("user", user);
+        prop.setProperty("password", pass);
+
+        try {
+            return DriverManager.getConnection(connString, prop);
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        return null;
+        return null; // TODO return real error?
     }
 
     public static void printResultSet(ResultSet rs) {
@@ -75,5 +81,23 @@ public class RA {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void main(String[] args) {
+        String query = "\\project_{bar, beer} (\n" +
+                "\t(\n" +
+                "\t\t\\project_{bar, beer} Serves\n" +
+                "\t\t\\diff\n" +
+                "\t\t\\project_{bar1, beer1} (\n" +
+                "\t\t    \\rename_{bar1, beer1, price1} Serves\n" +
+                "\t\t\t\\join_{beer1=beer2 and price1>price2}\n" +
+                "\t\t    \\rename_{bar2, beer2, price2} Serves\n" +
+                "\t   )\n" +
+                "\t)\n" +
+                "\t\\join\n" +
+                "\t\\select_{drinker='Dan'} Likes\n" +
+                ");";
+        RA ra = new RA();
+        printResultSet(ra.evaluate(query));
     }
 }

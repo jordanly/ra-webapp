@@ -1,11 +1,7 @@
 package grammar;
 
 import grammar.gen.RAGrammarBaseVisitor;
-import grammar.gen.RAGrammarLexer;
 import grammar.gen.RAGrammarParser;
-import org.antlr.v4.runtime.ANTLRInputStream;
-import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.tree.ParseTree;
 import ra.RA;
 
 import java.sql.Connection;
@@ -20,8 +16,15 @@ import java.util.Set;
  * Created by jordanly on 10/7/15.
  */
 public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
-    private Random random = new Random(12345);
-    private Set<Integer> usedTempNumbers = new HashSet<>();
+    private Random random;
+    private Set<Integer> usedTempNumbers;
+    private RA ra;
+
+    public RAEvalVisitor(RA ra) {
+        this.random = new Random(12345);
+        this.usedTempNumbers = new HashSet<>();
+        this.ra = ra;
+    }
 
     @Override
     public String visitExp0(RAGrammarParser.Exp0Context ctx) {
@@ -69,14 +72,8 @@ public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
                         + visit(ctx.getChild(2))
                         + " ) " + generateAlias(random) + " ; ";
 
-                ResultSetMetaData rsmd;
                 try { // TODO throw error?
-                    Connection conn = RA.connectToDB();
-                    Statement st = conn.createStatement();
-                    st.execute(subQuery);
-                    ResultSet rs = st.getResultSet();
-                    rsmd = rs.getMetaData();
-
+                    ResultSetMetaData rsmd = ra.queryDB(subQuery).getMetaData();
                     String[] newNames = extractOperatorOption(ctx.getChild(1).getText()).split(",");
 
                     output.append("SELECT ");

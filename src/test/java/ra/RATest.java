@@ -1,16 +1,8 @@
 package ra;
 
-import grammar.RAEvalVisitor;
-import grammar.gen.RAGrammarLexer;
-import grammar.gen.RAGrammarParser;
-import org.antlr.v4.runtime.ANTLRInputStream;
-import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.tree.ParseTree;
 
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -22,16 +14,16 @@ import static org.junit.Assert.*;
  * Created by jordanly on 10/15/15.
  */
 public class RATest {
-    Connection db;
+    private RA ra;
 
     @org.junit.Before
     public void setUp() throws Exception {
-        db = RA.connectToDB();
+        ra = new RA();
     }
 
     @org.junit.Test
     public void testQueryA() throws Exception {
-        ResultSet rs = evaluateQuery("\\project_{bar} (\n" +
+        ResultSet rs = ra.evaluate("\\project_{bar} (\n" +
                 "\t\\select_{drinker = 'Ben'} Frequents\n" +
                 ");");
         String[][] ans = new String[][]{{"Satisfaction"}, {"Talk of the Town"}, {"James Joyce Pub"}};
@@ -41,7 +33,7 @@ public class RATest {
 
     @org.junit.Test
     public void testQueryB() throws Exception {
-        ResultSet rs = evaluateQuery("\\project_{name, address} (\n" +
+        ResultSet rs = ra.evaluate("\\project_{name, address} (\n" +
                 "\t(\\select_{bar='James Joyce Pub' and times_a_week > 1} Frequents)\n" +
                 "\t\\join_{drinker=name} \n" +
                 "\tDrinker\n" +
@@ -53,7 +45,7 @@ public class RATest {
 
     @org.junit.Test
     public void testQueryC() throws Exception {
-        ResultSet rs = evaluateQuery("\\project_{bar} (\n" +
+        ResultSet rs = ra.evaluate("\\project_{bar} (\n" +
                 "\t\\select_{drinker='Eve'} Likes\n" +
                 "\t\\join\n" +
                 "\t\\select_{price<=2.75} Serves\n" +
@@ -66,7 +58,7 @@ public class RATest {
 
     @org.junit.Test
     public void testQueryD() throws Exception {
-        ResultSet rs = evaluateQuery("\\project_{drinker} (\n" +
+        ResultSet rs = ra.evaluate("\\project_{drinker} (\n" +
                 "\t\\select_{beer='Amstel'} Likes\t\n" +
                 "\t)\n" +
                 "\\diff\n" +
@@ -82,7 +74,7 @@ public class RATest {
 
     @org.junit.Test
     public void testQueryE() throws Exception {
-        ResultSet rs = evaluateQuery("\\project_{bar, beer} (\n" +
+        ResultSet rs = ra.evaluate("\\project_{bar, beer} (\n" +
                 "\t(\n" +
                 "\t\t\\project_{bar, beer} Serves\n" +
                 "\t\t\\diff\n" +
@@ -106,7 +98,7 @@ public class RATest {
 
     @org.junit.Test
     public void testQueryF() throws Exception {
-        ResultSet rs = evaluateQuery("Serves\n" +
+        ResultSet rs = ra.evaluate("Serves\n" +
                 "\\diff\n" +
                 "\\project_{bar3,beer3,price3}\n" +
                 "  \\select_{price1 < price2 and price2 < price3}\n" +
@@ -122,7 +114,7 @@ public class RATest {
 
     @org.junit.Test
     public void testQueryG() throws Exception {
-        ResultSet rs = evaluateQuery("\\project_{drinker,bar} Frequents\n" +
+        ResultSet rs = ra.evaluate("\\project_{drinker,bar} Frequents\n" +
                 "\\diff\n" +
                 "\\project_{drinker, bar}(\n" +
                 "\tLikes\n" +
@@ -137,7 +129,7 @@ public class RATest {
 
     @org.junit.Test
     public void testQueryH() throws Exception {
-        ResultSet rs = evaluateQuery("\\project_{name} Drinker\n" +
+        ResultSet rs = ra.evaluate("\\project_{name} Drinker\n" +
                 "\\diff\n" +
                 "\\project_{drinker}\n" +
                 "(\n" +
@@ -156,7 +148,7 @@ public class RATest {
 
     @org.junit.Test
     public void testQueryI() throws Exception {
-        ResultSet rs = evaluateQuery("\\project_{name} Drinker\n" +
+        ResultSet rs = ra.evaluate("\\project_{name} Drinker\n" +
                 "\\diff\n" +
                 "\\project_{drinker} (\n" +
                 "\t\\project_{drinker,bar} (Likes \\join Serves)\n" +
@@ -166,20 +158,6 @@ public class RATest {
         String[][] ans = new String[][]{{"Dan"}};
 
         assertTrue(validateResultSet(rs, ans));
-    }
-
-    public ResultSet evaluateQuery(String raQuery) throws Exception {
-        ANTLRInputStream inputStream = new ANTLRInputStream(raQuery);
-        RAGrammarLexer lexer = new RAGrammarLexer(inputStream);
-        CommonTokenStream tokenStream = new CommonTokenStream(lexer);
-        RAGrammarParser parser = new RAGrammarParser(tokenStream);
-
-        ParseTree tree = parser.exp0();
-        String sqlQuery = new RAEvalVisitor().visit(tree);
-
-        Statement st = db.createStatement();
-        st.execute(sqlQuery);
-        return st.getResultSet();
     }
 
     private boolean validateResultSet(ResultSet rs, String[][] ans) throws Exception {
