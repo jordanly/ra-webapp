@@ -47,7 +47,6 @@ public class RATest {
                 "\tDrinker\n" +
                 ");");
         String[][] ans = new String[][]{{"Amy", "100 W. Main Street"}, {"Eve", "100 W. Main Street"}};
-        // TODO still need to implement join on
 
         assertTrue(validateResultSet(rs, ans));
     }
