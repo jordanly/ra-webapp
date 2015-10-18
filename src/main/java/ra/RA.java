@@ -63,6 +63,28 @@ public class RA {
         return null; // TODO return real error?
     }
 
+    public String resultSetToString(ResultSet rs) {
+        StringBuilder sb = new StringBuilder();
+        try {
+            ResultSetMetaData md = rs.getMetaData();
+            int numCols = md.getColumnCount();
+            for (int i = 1; i <= numCols; i++) {
+                sb.append(md.getColumnName(i) + " | ");
+            }
+            sb.append("<br />");
+
+            while (rs.next()) {
+                for (int i = 1; i <= numCols; i++) {
+                    sb.append(rs.getString(i) + " | ");
+                }
+                sb.append("<br />");
+            }
+            return sb.toString();
+        } catch (SQLException e) {
+            return e.toString();
+        }
+    }
+
     public static void printResultSet(ResultSet rs) {
         try {
             ResultSetMetaData md = rs.getMetaData();
