@@ -17,8 +17,8 @@ public class Main {
         staticFileLocation("/public");
         Configuration viewDir = new Configuration(Configuration.VERSION_2_3_22);
         viewDir.setClassForTemplateLoading(Main.class, "/templates/");
-        port(8000);
-//        port(getHerokuAssignedPort());
+//        port(8000);
+        port(getHerokuAssignedPort());
 
         /**
          * Main page endpoint
