@@ -4,10 +4,7 @@ import grammar.gen.RAGrammarBaseVisitor;
 import grammar.gen.RAGrammarParser;
 import ra.RA;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
-import java.sql.Statement;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
@@ -73,7 +70,7 @@ public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
                         + " ) " + generateAlias(random) + " ; ";
 
                 try { // TODO throw error?
-                    ResultSetMetaData rsmd = ra.queryDB(subQuery).getMetaData();
+                    ResultSetMetaData rsmd = ra.evaluateSQLQuery(subQuery).getMetaData();
                     String[] newNames = extractOperatorOption(ctx.getChild(1).getText()).split(",");
 
                     output.append("SELECT ");

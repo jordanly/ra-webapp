@@ -24,8 +24,8 @@ public class RA {
         this.dbConnection = createDBConnection(CONNECTION_STRING, DB_USER, DB_PASSWORD);
     }
 
-    public ResultSet evaluate(String raQuery) {
-        ANTLRInputStream inputStream = new ANTLRInputStream(raQuery);
+    public ResultSet evaluateRAQuery(String query) {
+        ANTLRInputStream inputStream = new ANTLRInputStream(query);
         RAGrammarLexer lexer = new RAGrammarLexer(inputStream);
         CommonTokenStream tokenStream = new CommonTokenStream(lexer);
         RAGrammarParser parser = new RAGrammarParser(tokenStream);
@@ -33,13 +33,13 @@ public class RA {
         ParseTree tree = parser.exp0();
         String sqlQuery = new RAEvalVisitor(this).visit(tree);
 
-        return queryDB(sqlQuery);
+        return evaluateSQLQuery(sqlQuery);
     }
 
-    public ResultSet queryDB(String sqlQuery) {
+    public ResultSet evaluateSQLQuery(String query) {
         try {
             Statement st = dbConnection.createStatement();
-            st.execute(sqlQuery);
+            st.execute(query);
 
             return st.getResultSet();
         } catch (Exception e) {
@@ -98,6 +98,6 @@ public class RA {
                 "\t\\select_{drinker='Dan'} Likes\n" +
                 ");";
         RA ra = new RA();
-        printResultSet(ra.evaluate(query));
+        printResultSet(ra.evaluateRAQuery(query));
     }
 }

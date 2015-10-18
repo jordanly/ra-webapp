@@ -23,7 +23,7 @@ public class RATest {
 
     @org.junit.Test
     public void testQueryA() throws Exception {
-        ResultSet rs = ra.evaluate("\\project_{bar} (\n" +
+        ResultSet rs = ra.evaluateRAQuery("\\project_{bar} (\n" +
                 "\t\\select_{drinker = 'Ben'} Frequents\n" +
                 ");");
         String[][] ans = new String[][]{{"Satisfaction"}, {"Talk of the Town"}, {"James Joyce Pub"}};
@@ -33,7 +33,7 @@ public class RATest {
 
     @org.junit.Test
     public void testQueryB() throws Exception {
-        ResultSet rs = ra.evaluate("\\project_{name, address} (\n" +
+        ResultSet rs = ra.evaluateRAQuery("\\project_{name, address} (\n" +
                 "\t(\\select_{bar='James Joyce Pub' and times_a_week > 1} Frequents)\n" +
                 "\t\\join_{drinker=name} \n" +
                 "\tDrinker\n" +
@@ -45,7 +45,7 @@ public class RATest {
 
     @org.junit.Test
     public void testQueryC() throws Exception {
-        ResultSet rs = ra.evaluate("\\project_{bar} (\n" +
+        ResultSet rs = ra.evaluateRAQuery("\\project_{bar} (\n" +
                 "\t\\select_{drinker='Eve'} Likes\n" +
                 "\t\\join\n" +
                 "\t\\select_{price<=2.75} Serves\n" +
@@ -58,7 +58,7 @@ public class RATest {
 
     @org.junit.Test
     public void testQueryD() throws Exception {
-        ResultSet rs = ra.evaluate("\\project_{drinker} (\n" +
+        ResultSet rs = ra.evaluateRAQuery("\\project_{drinker} (\n" +
                 "\t\\select_{beer='Amstel'} Likes\t\n" +
                 "\t)\n" +
                 "\\diff\n" +
@@ -74,7 +74,7 @@ public class RATest {
 
     @org.junit.Test
     public void testQueryE() throws Exception {
-        ResultSet rs = ra.evaluate("\\project_{bar, beer} (\n" +
+        ResultSet rs = ra.evaluateRAQuery("\\project_{bar, beer} (\n" +
                 "\t(\n" +
                 "\t\t\\project_{bar, beer} Serves\n" +
                 "\t\t\\diff\n" +
@@ -98,7 +98,7 @@ public class RATest {
 
     @org.junit.Test
     public void testQueryF() throws Exception {
-        ResultSet rs = ra.evaluate("Serves\n" +
+        ResultSet rs = ra.evaluateRAQuery("Serves\n" +
                 "\\diff\n" +
                 "\\project_{bar3,beer3,price3}\n" +
                 "  \\select_{price1 < price2 and price2 < price3}\n" +
@@ -114,7 +114,7 @@ public class RATest {
 
     @org.junit.Test
     public void testQueryG() throws Exception {
-        ResultSet rs = ra.evaluate("\\project_{drinker,bar} Frequents\n" +
+        ResultSet rs = ra.evaluateRAQuery("\\project_{drinker,bar} Frequents\n" +
                 "\\diff\n" +
                 "\\project_{drinker, bar}(\n" +
                 "\tLikes\n" +
@@ -129,7 +129,7 @@ public class RATest {
 
     @org.junit.Test
     public void testQueryH() throws Exception {
-        ResultSet rs = ra.evaluate("\\project_{name} Drinker\n" +
+        ResultSet rs = ra.evaluateRAQuery("\\project_{name} Drinker\n" +
                 "\\diff\n" +
                 "\\project_{drinker}\n" +
                 "(\n" +
@@ -148,7 +148,7 @@ public class RATest {
 
     @org.junit.Test
     public void testQueryI() throws Exception {
-        ResultSet rs = ra.evaluate("\\project_{name} Drinker\n" +
+        ResultSet rs = ra.evaluateRAQuery("\\project_{name} Drinker\n" +
                 "\\diff\n" +
                 "\\project_{drinker} (\n" +
                 "\t\\project_{drinker,bar} (Likes \\join Serves)\n" +
