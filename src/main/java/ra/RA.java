@@ -18,6 +18,7 @@ public class RA {
 
     public RA() {
         this.dbConnection = createDBConnection();
+        System.err.println("CONNECTION IS " + dbConnection.toString());
     }
 
     public ResultSet evaluateRAQuery(String query) {
