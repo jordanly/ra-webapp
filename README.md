@@ -21,6 +21,20 @@ CREATE USER
 GRANT PRIVILEGES
 Connect to connection string in Java
 
+Heroku PostgreSQL DB Setup
+==========================
+
+First, add the PostgreSQL addon to create the database for the web app;
+
+"heroku addons:create heroku-postgresql:hobby-dev"
+
+Then, add rows to database:
+
+"cat setup-queries.sql | heroku pg:psql --app ra-beers-example"
+
+Then you should be done! You can access the database using "heroku pg:psql" and
+the URL will be an environment variable "DATABASE_URL".
+
 NOTES
 =====
 We need to generate aliases when using FROM in some cases. Will probably just
