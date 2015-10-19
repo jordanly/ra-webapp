@@ -4,6 +4,7 @@
 /Users/jordanly/Documents/workspace/ra3/src/main/java/grammar/RAEvalVisitor.java
 /Users/jordanly/Documents/workspace/ra3/src/main/java/grammar/gen/RAGrammarLexer.java
 /Users/jordanly/Documents/workspace/ra3/src/main/java/grammar/gen/RAGrammarVisitor.java
+/Users/jordanly/Documents/workspace/ra3/src/main/java/util/ResultSetUtilities.java
 /Users/jordanly/Documents/workspace/ra3/src/main/java/grammar/gen/RAGrammarParser.java
 /Users/jordanly/Documents/workspace/ra3/src/main/java/grammar/nodes/ExpressionNode.java
 /Users/jordanly/Documents/workspace/ra3/src/main/java/Main.java

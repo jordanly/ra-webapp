@@ -34,8 +34,3 @@ Then, add rows to database:
 
 Then you should be done! You can access the database using "heroku pg:psql" and
 the URL will be an environment variable "DATABASE_URL".
-
-NOTES
-=====
-We need to generate aliases when using FROM in some cases. Will probably just
-generate aliases everywhere we use FROM

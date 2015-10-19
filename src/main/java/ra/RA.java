@@ -22,8 +22,11 @@ public class RA {
     private Connection dbConnection;
 
     public RA() { // Should pass DB into constructor
-//        this.dbConnection = createDBConnection(); // Uncomment for heroku
-        this.dbConnection = createDBConnection(CONNECTION_STRING, DB_USER, DB_PASSWORD);
+        if (System.getenv("DATABASE_URL") != null) {
+            this.dbConnection = createDBConnection(); // Heroku DB
+        } else {
+            this.dbConnection = createDBConnection(CONNECTION_STRING, DB_USER, DB_PASSWORD);
+        }
     }
 
     public ResultSet evaluateRAQuery(String query) {
@@ -83,19 +86,7 @@ public class RA {
 
 
     public static void main(String[] args) {
-        String query = "\\project_{bar, beer} (\n" +
-                "\t(\n" +
-                "\t\t\\project_{bar, beer} Serves\n" +
-                "\t\t\\diff\n" +
-                "\t\t\\project_{bar1, beer1} (\n" +
-                "\t\t    \\rename_{bar1, beer1, price1} Serves\n" +
-                "\t\t\t\\join_{beer1=beer2 and price1>price2}\n" +
-                "\t\t    \\rename_{bar2, beer2, price2} Serves\n" +
-                "\t   )\n" +
-                "\t)\n" +
-                "\t\\join\n" +
-                "\t\\select_{drinker='Dan'} Likes\n" +
-                ");";
+        String query = ("(\\project_{name, address} Drinker) \\diff (\\project_{address, name} Drinker);");
         RA ra = new RA();
         ResultSetUtilities.print(ra.evaluateRAQuery(query));
     }
