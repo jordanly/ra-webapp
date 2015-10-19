@@ -1,7 +1,7 @@
 package ra;
-import grammar.RAEvalVisitor;
-import grammar.gen.RAGrammarLexer;
-import grammar.gen.RAGrammarParser;
+import ra.grammar.RAEvalVisitor;
+import ra.grammar.gen.RAGrammarLexer;
+import ra.grammar.gen.RAGrammarParser;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTree;
 import util.ResultSetUtilities;
@@ -37,6 +37,7 @@ public class RA {
 
         ParseTree tree = parser.exp0();
         String sqlQuery = new RAEvalVisitor(this).visit(tree);
+        System.out.println("hello");
 
         return evaluateSQLQuery(sqlQuery);
     }
@@ -86,7 +87,7 @@ public class RA {
 
 
     public static void main(String[] args) {
-        String query = ("(\\project_{name, address} Drinker) \\diff (\\project_{address, name} Drinker);");
+        String query = ("Bars \\unonfsdf Test;");
         RA ra = new RA();
         ResultSetUtilities.print(ra.evaluateRAQuery(query));
     }

@@ -1,7 +1,7 @@
-package grammar;
+package ra.grammar;
 
-import grammar.gen.RAGrammarBaseVisitor;
-import grammar.gen.RAGrammarParser;
+import ra.grammar.gen.RAGrammarBaseVisitor;
+import ra.grammar.gen.RAGrammarParser;
 import ra.RA;
 
 import java.sql.ResultSetMetaData;
@@ -64,7 +64,6 @@ public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
                         visit(ctx.getChild(2)), generateAlias(random));
             case "\\rename":
                 // Get column names so we can rename them
-                // TODO replace with call to RA?
                 String subQuery = "SELECT * FROM ( "
                         + visit(ctx.getChild(2))
                         + " ) " + generateAlias(random) + " ; ";

@@ -1,5 +1,5 @@
-// Generated from /Users/jordanly/Documents/workspace/ra3/src/main/java/grammar/RAGrammar.g4 by ANTLR 4.5.1
-package grammar.gen;
+// Generated from /Users/jordanly/Documents/workspace/ra3/src/main/java/ra.grammar/RAGrammar.g4 by ANTLR 4.5.1
+package ra.grammar.gen;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;

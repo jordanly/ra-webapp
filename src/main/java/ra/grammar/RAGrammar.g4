@@ -1,4 +1,4 @@
-grammar RAGrammar ;
+ra.grammar RAGrammar ;
 
 // Lexer rules
 
