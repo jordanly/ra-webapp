@@ -1,5 +1,6 @@
 package ra;
 import ra.grammar.RAEvalVisitor;
+import ra.grammar.gen.RAErrorListener;
 import ra.grammar.gen.RAGrammarLexer;
 import ra.grammar.gen.RAGrammarParser;
 import org.antlr.v4.runtime.*;
@@ -34,10 +35,10 @@ public class RA {
         RAGrammarLexer lexer = new RAGrammarLexer(inputStream);
         CommonTokenStream tokenStream = new CommonTokenStream(lexer);
         RAGrammarParser parser = new RAGrammarParser(tokenStream);
+        parser.addErrorListener(new RAErrorListener());
 
         ParseTree tree = parser.exp0();
         String sqlQuery = new RAEvalVisitor(this).visit(tree);
-        System.out.println("hello");
 
         return evaluateSQLQuery(sqlQuery);
     }
