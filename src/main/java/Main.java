@@ -6,7 +6,9 @@ import spark.template.freemarker.FreeMarkerEngine;
 
 import freemarker.template.*;
 import util.ResultSetUtilities;
+import util.TempUtil;
 
+import java.sql.Connection;
 import java.util.*;
 
 /**
@@ -14,6 +16,8 @@ import java.util.*;
  */
 
 public class Main {
+
+
     public static void main(String[] args) {
         staticFileLocation("/public");
         Configuration viewDir = new Configuration(Configuration.VERSION_2_3_22);
@@ -28,7 +32,14 @@ public class Main {
 //            return new ModelAndView(new HashMap<String, Object>(), "frontend.ftl");
 //        }, new FreeMarkerEngine(viewDir));
 
-        RA ra = new RA();
+
+        Connection conn;
+        if (System.getenv("DATABASE_URL") != null) {
+            conn = TempUtil.createHerokueDBConnection(); // Heroku DB
+        } else {
+            conn = TempUtil.createLocalDBConnection();
+        }
+        RA ra = new RA(conn);
         /**
          * RA-query endpoint
          */
@@ -48,7 +59,7 @@ public class Main {
         }, new FreeMarkerEngine(viewDir));
     }
 
-    static int getHerokuAssignedPort() {
+    private static int getHerokuAssignedPort() {
         ProcessBuilder processBuilder = new ProcessBuilder();
         if (processBuilder.environment().get("PORT") != null) {
             return Integer.parseInt(processBuilder.environment().get("PORT"));

@@ -1,6 +1,8 @@
 package ra;
 
 
+import util.TempUtil;
+
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.util.ArrayList;
@@ -18,7 +20,7 @@ public class RATest {
 
     @org.junit.Before
     public void setUp() throws Exception {
-        ra = new RA();
+        ra = new RA(TempUtil.createLocalDBConnection());
     }
 
     @org.junit.Test

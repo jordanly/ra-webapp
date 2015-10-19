@@ -6,28 +6,18 @@ import ra.grammar.gen.RAGrammarParser;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTree;
 import util.ResultSetUtilities;
+import util.TempUtil;
 
-import java.net.URI;
 import java.sql.*;
-import java.util.Properties;
-
 
 /**
  * Created by jordanly on 10/6/15.
  */
 public class RA {
-    public static String CONNECTION_STRING = "jdbc:postgresql:beers";
-    public static String DB_USER = "raservice";
-    public static String DB_PASSWORD = "test";
-
     private Connection dbConnection;
 
-    public RA() { // Should pass DB into constructor
-        if (System.getenv("DATABASE_URL") != null) {
-            this.dbConnection = createDBConnection(); // Heroku DB
-        } else {
-            this.dbConnection = createDBConnection(CONNECTION_STRING, DB_USER, DB_PASSWORD);
-        }
+    public RA(Connection dbConnection) {
+        this.dbConnection = dbConnection;
     }
 
     public ResultSet evaluateRAQuery(String query) {
@@ -56,40 +46,9 @@ public class RA {
         return null;
     }
 
-    private Connection createDBConnection() {
-        try {
-            URI dbUri = new URI(System.getenv("DATABASE_URL")); // Heroku DB
-
-            String username = dbUri.getUserInfo().split(":")[0];
-            String password = dbUri.getUserInfo().split(":")[1];
-            String dbUrl = "jdbc:postgresql://" + dbUri.getHost() + ':' + dbUri.getPort() + dbUri.getPath();
-
-            return DriverManager.getConnection(dbUrl, username, password);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
-    private Connection createDBConnection(String connString, String user, String pass) {
-        Properties prop = new Properties();
-        prop.setProperty("user", user);
-        prop.setProperty("password", pass);
-
-        try {
-            return DriverManager.getConnection(connString, prop);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return null; // TODO return real error?
-    }
-
-
     public static void main(String[] args) {
         String query = ("Bars \\unonfsdf Test;");
-        RA ra = new RA();
+        RA ra = new RA(TempUtil.createLocalDBConnection());
         ResultSetUtilities.print(ra.evaluateRAQuery(query));
     }
 }
