@@ -5,6 +5,7 @@ import spark.ModelAndView;
 import spark.template.freemarker.FreeMarkerEngine;
 
 import freemarker.template.*;
+import util.ResultSetUtilities;
 
 import java.util.*;
 
@@ -36,7 +37,7 @@ public class Main {
 
             String qString = "";
             if (req.queryParams("ra_query") != null) {
-                qString = ra.resultSetToString(
+                qString = ResultSetUtilities.asString(
                         ra.evaluateRAQuery(req.queryParams("ra_query"))
                 );
             }
