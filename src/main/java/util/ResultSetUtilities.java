@@ -1,8 +1,13 @@
 package util;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by jordanly on 10/18/15.
@@ -30,6 +35,30 @@ public final class ResultSetUtilities {
         } catch (SQLException e) {
             return e.toString();
         }
+    }
+
+    public static JSONArray toJSONArray(ResultSet rs) {
+        JSONArray rows = new JSONArray();
+
+        try {
+            ResultSetMetaData rsmd = rs.getMetaData();
+            String[] columns = new String[rsmd.getColumnCount()];
+            for (int i = 0; i < columns.length; i++) {
+                columns[i] = rsmd.getColumnName(i + 1);
+            }
+
+            while (rs.next()) {
+                JSONObject obj = new JSONObject();
+                for (int i = 0; i < columns.length; i++) {
+                    obj.put(columns[i], rs.getString(i + 1));
+                }
+                rows.put(obj);
+            }
+        } catch (Exception e) {
+            e.printStackTrace(); // TODO throw real error
+        }
+
+        return rows;
     }
 
 

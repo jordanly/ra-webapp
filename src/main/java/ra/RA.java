@@ -1,6 +1,7 @@
 package ra;
+import org.json.JSONArray;
 import ra.grammar.RAEvalVisitor;
-import ra.grammar.gen.RAErrorListener;
+import ra.grammar.RAErrorListener;
 import ra.grammar.gen.RAGrammarLexer;
 import ra.grammar.gen.RAGrammarParser;
 import org.antlr.v4.runtime.*;
@@ -47,8 +48,14 @@ public class RA {
     }
 
     public static void main(String[] args) {
-        String query = ("Bars \\unonfsdf Test;");
+        String query = ("\\project_{bar} (\n" +
+                "\t\\select_{drinker='Eve'} Likes\n" +
+                "\t\\join\n" +
+                "\t\\select_{price<=2.75} Serves\n" +
+                ");");
         RA ra = new RA(TempUtil.createLocalDBConnection());
-        ResultSetUtilities.print(ra.evaluateRAQuery(query));
+        JSONArray rows = ResultSetUtilities.toJSONArray(ra.evaluateRAQuery(query));
+
+        System.out.println(rows);
     }
 }

@@ -1,4 +1,4 @@
-package ra.grammar.gen;
+package ra.grammar;
 
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.RecognitionException;
