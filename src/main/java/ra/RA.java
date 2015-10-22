@@ -1,11 +1,5 @@
 package ra;
 import org.json.JSONArray;
-import ra.grammar.RAEvalVisitor;
-import ra.grammar.RAErrorListener;
-import ra.grammar.gen.RAGrammarLexer;
-import ra.grammar.gen.RAGrammarParser;
-import org.antlr.v4.runtime.*;
-import org.antlr.v4.runtime.tree.ParseTree;
 import util.ResultSetUtilities;
 import util.TempUtil;
 
@@ -21,23 +15,14 @@ public class RA {
         this.dbConnection = dbConnection;
     }
 
-    public ResultSet evaluateRAQuery(String query) {
-        ANTLRInputStream inputStream = new ANTLRInputStream(query);
-        RAGrammarLexer lexer = new RAGrammarLexer(inputStream);
-        CommonTokenStream tokenStream = new CommonTokenStream(lexer);
-        RAGrammarParser parser = new RAGrammarParser(tokenStream);
-        parser.addErrorListener(new RAErrorListener());
-
-        ParseTree tree = parser.exp0();
-        String sqlQuery = new RAEvalVisitor(this).visit(tree);
-
-        return evaluateSQLQuery(sqlQuery);
+    public Query evaluateRAQuery(String raQuery) {
+        return new Query(this, raQuery);
     }
 
-    public ResultSet evaluateSQLQuery(String query) {
+    public ResultSet evaluateSQLQuery(String sqlQuery) {
         try {
             Statement st = dbConnection.createStatement();
-            st.execute(query);
+            st.execute(sqlQuery);
 
             return st.getResultSet();
         } catch (Exception e) {
@@ -54,8 +39,7 @@ public class RA {
                 "\t\\select_{price<=2.75} Serves\n" +
                 ");");
         RA ra = new RA(TempUtil.createLocalDBConnection());
-        JSONArray rows = ResultSetUtilities.toJSONArray(ra.evaluateRAQuery(query));
-
-        System.out.println(rows);
+        Query ans = ra.evaluateRAQuery(query);
+        System.out.println(ans.toString());
     }
 }

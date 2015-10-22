@@ -1,5 +1,6 @@
 package ra.grammar;
 
+import ra.Query;
 import ra.grammar.gen.RAGrammarBaseVisitor;
 import ra.grammar.gen.RAGrammarParser;
 import ra.RA;
@@ -13,14 +14,14 @@ import java.util.Set;
  * Created by jordanly on 10/7/15.
  */
 public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
-    private Random random;
-    private Set<Integer> usedTempNumbers;
+    private Random random = new Random(12345);
+    private Set<Integer> usedTempNumbers = new HashSet<>();
     private RA ra;
+    private Query query;
 
-    public RAEvalVisitor(RA ra) {
-        this.random = new Random(12345);
-        this.usedTempNumbers = new HashSet<>();
+    public RAEvalVisitor(RA ra, Query query) {
         this.ra = ra;
+        this.query = query;
     }
 
     @Override
