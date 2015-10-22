@@ -3,7 +3,7 @@ package ra.grammar;
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
-import org.antlr.v4.runtime.misc.ParseCancellationException;
+import ra.exceptions.RASyntaxException;
 
 /**
  * Created by jordanly on 10/18/15.
@@ -12,7 +12,7 @@ public class RAErrorListener extends BaseErrorListener {
     @Override
     public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol,
                             int line, int charPositionInLine, String msg, RecognitionException e)
-            throws ParseCancellationException {
-        throw new ParseCancellationException("line " + line + ":" + charPositionInLine + " " + msg);
+            throws RASyntaxException {
+        throw new RASyntaxException(line, charPositionInLine, msg);
     }
 }

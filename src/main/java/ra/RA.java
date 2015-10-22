@@ -36,16 +36,16 @@ public class RA {
 
             return st.getResultSet();
         } catch (SQLException e) {
-            System.out.println(e.toString()); // TODO could not query db
+            // TODO how to handle database errors/bad sql queries
+            System.out.println(e.toString());
         }
 
         return null;
     }
 
     public static void main(String[] args) {
-        String query = ("\\project_{bar} (\n" +
-                "\t\\select_{drinker = 'Ben'} Frequents\n" +
-                ");");
+        String query = ("\\project_{date} \\select_--;");
+        System.out.println(query);
         RA ra = new RA(TempUtil.createLocalDBConnection());
         Query ans = ra.evaluateRAQuery(query);
         System.out.println(ans.toJson());

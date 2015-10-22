@@ -5,6 +5,8 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.json.JSONObject;
+import ra.exceptions.RAException;
+import ra.exceptions.RASyntaxException;
 import ra.grammar.RAErrorListener;
 import ra.grammar.RAEvalVisitor;
 import ra.grammar.gen.RAGrammarLexer;
@@ -19,7 +21,7 @@ public class Query {
     private ParseTree tree;
     private ResultSet resultSet;
 
-    private Exception e;
+    private RAException e;
 
     // Every query begins with an RA query string
     public Query(RA ra, String raQuery) {
@@ -33,13 +35,14 @@ public class Query {
         CommonTokenStream tokenStream = new CommonTokenStream(lexer);
         RAGrammarParser parser = new RAGrammarParser(tokenStream);
         parser.addErrorListener(new RAErrorListener());
+        // TODO remove default listener (which just prints to stderr)
 
         try {
             this.tree = parser.exp0();
             this.sqlQuery = new RAEvalVisitor(ra, this).visit(tree);
             this.resultSet = ra.evaluateSQLQuery(sqlQuery);
-        } catch (ParseCancellationException pce) {
-            e = pce;
+        } catch (RASyntaxException rase) {
+            e = rase;
         }
     }
 
@@ -48,9 +51,9 @@ public class Query {
 
         if (e != null) {
             obj.put("isError", true);
-            obj.put("error", e.toString());
+            obj.put("error", e.asJson());
         } else {
-            obj.put("error", false);
+            obj.put("isError", false);
             obj.put("data", ResultSetUtilities.toJSONArray(resultSet));
         }
 
