@@ -34,12 +34,10 @@ public class RA {
 
     public static void main(String[] args) {
         String query = ("\\project_{bar} (\n" +
-                "\t\\select_{drinker='Eve'} Likes\n" +
-                "\t\\join\n" +
-                "\t\\select_{price<=2.75} Serves\n" +
+                "\t\\select_{drinker = 'Ben'} Frequents\n" +
                 ");");
         RA ra = new RA(TempUtil.createLocalDBConnection());
         Query ans = ra.evaluateRAQuery(query);
-        System.out.println(ans.toString());
+        System.out.println(ans.toJson());
     }
 }
