@@ -1,18 +1,28 @@
 package ra;
-import org.json.JSONArray;
-import util.ResultSetUtilities;
 import util.TempUtil;
 
 import java.sql.*;
 
-/**
- * Created by jordanly on 10/6/15.
- */
 public class RA {
     private Connection dbConnection;
 
     public RA(Connection dbConnection) {
         this.dbConnection = dbConnection;
+
+        if (dbConnection == null) {
+            System.err.println("Null connection supplied to RA");
+            System.err.println("Shutting down.");
+            System.exit(1);
+        }
+        try {
+            // TODO log successful connection?
+            DatabaseMetaData dbmd = dbConnection.getMetaData();
+        } catch (SQLException e) {
+            // TODO add backup plan? throw error instead of quitting?
+            System.err.println("Could not connect to database.");
+            System.err.println("Shutting down.");
+            System.exit(1);
+        }
     }
 
     public Query evaluateRAQuery(String raQuery) {
@@ -25,7 +35,7 @@ public class RA {
             st.execute(sqlQuery);
 
             return st.getResultSet();
-        } catch (Exception e) {
+        } catch (SQLException e) {
             System.out.println(e.toString()); // TODO could not query db
         }
 
