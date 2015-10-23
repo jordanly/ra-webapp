@@ -46,6 +46,7 @@ public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
     public String visitTableExp(RAGrammarParser.TableExpContext ctx) {
         String tableName = ctx.getText().toLowerCase();
 
+        // Check if table exists in database
         if (!tables.contains(tableName)) {
             RASyntaxException e = new RASyntaxException(
                     ctx.getStart().getLine(),
@@ -53,9 +54,11 @@ public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
                     "No such table: " + tableName
             );
             query.setException(e);
+            // TODO return something if error? how to break out of recursion
+            // TODO maybe throw general exception
         }
 
-        return tableName; // Child is just the table name
+        return tableName;
     }
 
     @Override

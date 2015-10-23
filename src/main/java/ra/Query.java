@@ -56,11 +56,11 @@ public class Query {
     public String toJson() {
         JSONObject obj = new JSONObject();
 
+        obj.put("query", raQuery);
+        obj.put("isError", exception != null);
         if (exception != null) {
-            obj.put("isError", true);
             obj.put("error", exception.asJson());
         } else {
-            obj.put("isError", false);
             obj.put("data", ResultSetUtilities.toJSONArray(resultSet));
         }
 

@@ -57,6 +57,24 @@ public class RA {
         return tables;
     }
 
+    public List<String> getTableColumns(String tableName) throws SQLException {
+        List<String> columnNames = new ArrayList<>();
+
+        List<String> tables = getTables();
+        for (String s : tables) {
+            Statement st = dbConnection.createStatement();
+            st.execute("SELECT * FROM " + s);
+            ResultSet rs = st.getResultSet();
+            ResultSetMetaData rsmd = rs.getMetaData();
+
+            for (int i = 1; i <= rsmd.getColumnCount(); i++) {
+                columnNames.add(rsmd.getColumnName(i));
+            }
+        }
+
+        return columnNames;
+    }
+
     public static void main(String[] args) {
         String query = ("\\select_{name='Ben'} Drinkker;");
         System.out.println(query);
