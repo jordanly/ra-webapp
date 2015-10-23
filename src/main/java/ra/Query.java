@@ -32,7 +32,7 @@ public class Query {
         RAGrammarLexer lexer = new RAGrammarLexer(inputStream);
         CommonTokenStream tokenStream = new CommonTokenStream(lexer);
         RAGrammarParser parser = new RAGrammarParser(tokenStream);
-        parser.addErrorListener(new RAErrorListener());
+        parser.addErrorListener(new RAErrorListener(this));
         // TODO remove default listener (which just prints to stderr)
 
         this.tree = parser.exp0();
