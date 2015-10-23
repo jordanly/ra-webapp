@@ -1,13 +1,10 @@
 package ra.grammar;
 
 import ra.Query;
-import ra.exceptions.RASqlException;
-import ra.exceptions.RASyntaxException;
 import ra.grammar.gen.RAGrammarBaseVisitor;
 import ra.grammar.gen.RAGrammarParser;
 import ra.RA;
 
-import java.sql.Connection;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.HashSet;
@@ -20,18 +17,9 @@ public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
     private RA ra;
     private Query query;
 
-    private HashSet<String> tables;
-
     public RAEvalVisitor(RA ra, Query query) {
         this.ra = ra;
         this.query = query;
-
-        try {
-            this.tables = new HashSet<>(ra.getTables());
-        } catch (SQLException e) {
-            System.err.println("Could not access database.");
-            query.setException(new RASqlException(e));
-        }
     }
 
     @Override
@@ -47,16 +35,6 @@ public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
         String tableName = ctx.getText().toLowerCase();
 
         // Check if table exists in database
-        if (!tables.contains(tableName)) {
-            RASyntaxException e = new RASyntaxException(
-                    ctx.getStart().getLine(),
-                    ctx.getStart().getCharPositionInLine(),
-                    "No such table: " + tableName
-            );
-            query.setException(e);
-            // TODO return something if error? how to break out of recursion
-            // TODO maybe throw general exception
-        }
 
         return tableName;
     }

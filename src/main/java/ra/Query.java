@@ -5,7 +5,6 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.json.JSONObject;
 import ra.exceptions.RAException;
-import ra.exceptions.RASyntaxException;
 import ra.grammar.RAErrorListener;
 import ra.grammar.RAEvalVisitor;
 import ra.grammar.gen.RAGrammarLexer;
@@ -36,13 +35,9 @@ public class Query {
         parser.addErrorListener(new RAErrorListener());
         // TODO remove default listener (which just prints to stderr)
 
-        try {
-            this.tree = parser.exp0();
-            this.sqlQuery = new RAEvalVisitor(ra, this).visit(tree);
-            this.resultSet = ra.evaluateSQLQuery(sqlQuery);
-        } catch (RASyntaxException rase) {
-            exception = rase;
-        }
+        this.tree = parser.exp0();
+        this.sqlQuery = new RAEvalVisitor(ra, this).visit(tree);
+        this.resultSet = ra.evaluateSQLQuery(sqlQuery);
     }
 
     public boolean isValid() {

@@ -5,6 +5,8 @@ import org.json.JSONObject;
 /**
  * Created by jordanly on 10/22/15.
  */
-public interface RAException {
-    JSONObject asJson();
+public class RAException extends Exception {
+    public JSONObject asJson() {
+        return null; // TODO implement
+    }
 }
