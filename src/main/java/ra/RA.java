@@ -29,18 +29,11 @@ public class RA {
         return new Query(this, raQuery);
     }
 
-    public ResultSet evaluateSQLQuery(String sqlQuery) {
-        try {
-            Statement st = dbConnection.createStatement();
-            st.execute(sqlQuery);
+    public ResultSet evaluateSQLQuery(String sqlQuery) throws SQLException {
+        Statement st = dbConnection.createStatement();
+        st.execute(sqlQuery);
 
-            return st.getResultSet();
-        } catch (SQLException e) {
-            // TODO how to handle database errors/bad sql queries
-            System.out.println(e.toString());
-        }
-
-        return null;
+        return st.getResultSet();
     }
 
     public static void main(String[] args) {

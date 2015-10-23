@@ -1,11 +1,7 @@
 package ra.exceptions;
 
 import org.json.JSONObject;
-import ra.RA;
 
-/**
- * Created by jordanly on 10/22/15.
- */
 public class RAException extends Exception {
     private int line;
     private int charPositionInLine;
@@ -28,6 +24,12 @@ public class RAException extends Exception {
     }
 
     public JSONObject asJson() {
-        return null; // TODO implement
+        JSONObject obj = new JSONObject();
+
+        obj.put("line", line);
+        obj.put("charPositionInLine", charPositionInLine);
+        obj.put("message", message);
+
+        return obj;
     }
 }

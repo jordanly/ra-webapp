@@ -37,7 +37,14 @@ public class Query {
 
         this.tree = parser.exp0();
         this.sqlQuery = new RAEvalVisitor(ra, this).visit(tree);
-        this.resultSet = ra.evaluateSQLQuery(sqlQuery);
+
+        if (isValid()) {
+            try {
+                this.resultSet = ra.evaluateSQLQuery(sqlQuery);
+            } catch (Exception e) {
+                e.printStackTrace(); // TODO write real code
+            }
+        }
     }
 
     public boolean isValid() {

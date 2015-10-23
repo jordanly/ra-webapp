@@ -1,6 +1,7 @@
 package ra.grammar;
 
 import ra.Query;
+import ra.exceptions.RAException;
 import ra.grammar.gen.RAGrammarBaseVisitor;
 import ra.grammar.gen.RAGrammarParser;
 import ra.RA;
@@ -35,6 +36,16 @@ public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
         String tableName = ctx.getText().toLowerCase();
 
         // Check if table exists in database
+        try {
+            ra.evaluateSQLQuery("SELECT * FROM " + tableName + ";");
+        } catch (SQLException e) {
+            query.setException(new RAException(
+                    ctx.getStart().getLine(),
+                    ctx.getStart().getCharPositionInLine(),
+                    String.format("RAException: No such table '%s'", tableName),
+                    e
+            ));
+        }
 
         return tableName;
     }
