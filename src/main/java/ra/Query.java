@@ -2,7 +2,6 @@ package ra;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.json.JSONObject;
 import ra.exceptions.RAException;
@@ -21,7 +20,7 @@ public class Query {
     private ParseTree tree;
     private ResultSet resultSet;
 
-    private RAException e;
+    private RAException exception;
 
     // Every query begins with an RA query string
     public Query(RA ra, String raQuery) {
@@ -42,16 +41,24 @@ public class Query {
             this.sqlQuery = new RAEvalVisitor(ra, this).visit(tree);
             this.resultSet = ra.evaluateSQLQuery(sqlQuery);
         } catch (RASyntaxException rase) {
-            e = rase;
+            exception = rase;
         }
+    }
+
+    public boolean isValid() {
+        return (exception == null);
+    }
+
+    public void setException(RAException e) {
+        this.exception = e;
     }
 
     public String toJson() {
         JSONObject obj = new JSONObject();
 
-        if (e != null) {
+        if (exception != null) {
             obj.put("isError", true);
-            obj.put("error", e.asJson());
+            obj.put("error", exception.asJson());
         } else {
             obj.put("isError", false);
             obj.put("data", ResultSetUtilities.toJSONArray(resultSet));

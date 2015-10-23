@@ -2,6 +2,8 @@ package ra;
 import util.TempUtil;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class RA {
     private Connection dbConnection;
@@ -43,8 +45,20 @@ public class RA {
         return null;
     }
 
+    public List<String> getTables() throws SQLException {
+        DatabaseMetaData md = dbConnection.getMetaData();
+
+        List<String> tables = new ArrayList<>();
+        ResultSet rs = md.getTables(null, null, "%", null);
+        while (rs.next()) {
+            tables.add(rs.getString(3));
+        }
+
+        return tables;
+    }
+
     public static void main(String[] args) {
-        String query = ("\\project_{date} \\select_--;");
+        String query = ("\\select_{name='Ben'} Drinkker;");
         System.out.println(query);
         RA ra = new RA(TempUtil.createLocalDBConnection());
         Query ans = ra.evaluateRAQuery(query);

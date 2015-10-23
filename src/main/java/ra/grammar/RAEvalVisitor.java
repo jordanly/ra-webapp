@@ -1,27 +1,37 @@
 package ra.grammar;
 
 import ra.Query;
+import ra.exceptions.RASqlException;
+import ra.exceptions.RASyntaxException;
 import ra.grammar.gen.RAGrammarBaseVisitor;
 import ra.grammar.gen.RAGrammarParser;
 import ra.RA;
 
+import java.sql.Connection;
 import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
-/**
- * Created by jordanly on 10/7/15.
- */
 public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
     private Random random = new Random(12345);
     private Set<Integer> usedTempNumbers = new HashSet<>();
     private RA ra;
     private Query query;
 
+    private HashSet<String> tables;
+
     public RAEvalVisitor(RA ra, Query query) {
         this.ra = ra;
         this.query = query;
+
+        try {
+            this.tables = new HashSet<>(ra.getTables());
+        } catch (SQLException e) {
+            System.err.println("Could not access database.");
+            query.setException(new RASqlException(e));
+        }
     }
 
     @Override
@@ -34,7 +44,18 @@ public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
 
     @Override
     public String visitTableExp(RAGrammarParser.TableExpContext ctx) {
-        return ctx.getText(); // Child is just the table name
+        String tableName = ctx.getText().toLowerCase();
+
+        if (!tables.contains(tableName)) {
+            RASyntaxException e = new RASyntaxException(
+                    ctx.getStart().getLine(),
+                    ctx.getStart().getCharPositionInLine(),
+                    "No such table: " + tableName
+            );
+            query.setException(e);
+        }
+
+        return tableName; // Child is just the table name
     }
 
     @Override
