@@ -48,9 +48,7 @@ public class Main {
 
             String qString = "";
             if (req.queryParams("ra_query") != null) {
-                qString = ResultSetUtilities.asString(
-                        ra.evaluateRAQuery(req.queryParams("ra_query"))
-                );
+                qString = ra.evaluateRAQuery(req.queryParams("ra_query")).toString();
             }
 
             model.put("ra_output", qString);

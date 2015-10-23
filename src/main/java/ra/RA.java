@@ -1,61 +1,52 @@
 package ra;
-import org.json.JSONArray;
-import ra.grammar.RAEvalVisitor;
-import ra.grammar.RAErrorListener;
-import ra.grammar.gen.RAGrammarLexer;
-import ra.grammar.gen.RAGrammarParser;
-import org.antlr.v4.runtime.*;
-import org.antlr.v4.runtime.tree.ParseTree;
-import util.ResultSetUtilities;
 import util.TempUtil;
 
 import java.sql.*;
 
-/**
- * Created by jordanly on 10/6/15.
- */
 public class RA {
     private Connection dbConnection;
 
     public RA(Connection dbConnection) {
         this.dbConnection = dbConnection;
-    }
 
-    public ResultSet evaluateRAQuery(String query) {
-        ANTLRInputStream inputStream = new ANTLRInputStream(query);
-        RAGrammarLexer lexer = new RAGrammarLexer(inputStream);
-        CommonTokenStream tokenStream = new CommonTokenStream(lexer);
-        RAGrammarParser parser = new RAGrammarParser(tokenStream);
-        parser.addErrorListener(new RAErrorListener());
-
-        ParseTree tree = parser.exp0();
-        String sqlQuery = new RAEvalVisitor(this).visit(tree);
-
-        return evaluateSQLQuery(sqlQuery);
-    }
-
-    public ResultSet evaluateSQLQuery(String query) {
-        try {
-            Statement st = dbConnection.createStatement();
-            st.execute(query);
-
-            return st.getResultSet();
-        } catch (Exception e) {
-            System.out.println(e.toString()); // TODO could not query db
+        if (dbConnection == null) {
+            System.err.println("NULL connection supplied to RA");
+            System.err.println("Shutting down.");
+            System.exit(1);
         }
+        try {
+            // TODO log successful connection?
+            DatabaseMetaData dbmd = dbConnection.getMetaData();
+        } catch (SQLException e) {
+            // TODO add backup plan? throw error instead of quitting?
+            System.err.println("Could not connect to database.");
+            System.err.println("Shutting down.");
+            System.exit(1);
+        }
+    }
 
-        return null;
+    public Query evaluateRAQuery(String raQuery) {
+        return new Query(this, raQuery);
+    }
+
+    public ResultSet evaluateSQLQuery(String sqlQuery) throws SQLException {
+        Statement st = dbConnection.createStatement();
+        st.execute(sqlQuery);
+
+        return st.getResultSet();
     }
 
     public static void main(String[] args) {
-        String query = ("\\project_{bar} (\n" +
-                "\t\\select_{drinker='Eve'} Likes\n" +
-                "\t\\join\n" +
-                "\t\\select_{price<=2.75} Serves\n" +
-                ");");
+        String query = ("Serves\n" +
+                "\\diff\n" +
+                "\\project_{bar3,beer3,price3}\n" +
+                "  \\select_{price1 < price2 and price2 < price3}\n" +
+                "    (\\rename_{bar1, beer1, price1} Serves \\cross\n" +
+                "     \\rename_{bar2, beer2, price2} Serves \\cross\n" +
+                "     \\rename_{bar3, beer3, price3} Serves);");
+        System.out.println(query);
         RA ra = new RA(TempUtil.createLocalDBConnection());
-        JSONArray rows = ResultSetUtilities.toJSONArray(ra.evaluateRAQuery(query));
-
-        System.out.println(rows);
+        Query ans = ra.evaluateRAQuery(query);
+        System.out.println(ans.toJson());
     }
 }
