@@ -10,7 +10,7 @@ public class RA {
         this.dbConnection = dbConnection;
 
         if (dbConnection == null) {
-            System.err.println("Null connection supplied to RA");
+            System.err.println("NULL connection supplied to RA");
             System.err.println("Shutting down.");
             System.exit(1);
         }
@@ -37,7 +37,13 @@ public class RA {
     }
 
     public static void main(String[] args) {
-        String query = ("\\select_{name='Ben'} Drinkker;");
+        String query = ("Serves\n" +
+                "\\diff\n" +
+                "\\project_{bar3,beer3,price3}\n" +
+                "  \\select_{price1 < price2 and price2 < price3}\n" +
+                "    (\\rename_{bar1, beer1, price1} Serves \\cross\n" +
+                "     \\rename_{bar2, beer2, price2} Serves \\cross\n" +
+                "     \\rename_{bar3, beer3, price3} Serves);");
         System.out.println(query);
         RA ra = new RA(TempUtil.createLocalDBConnection());
         Query ans = ra.evaluateRAQuery(query);

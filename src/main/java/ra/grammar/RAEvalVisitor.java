@@ -1,13 +1,16 @@
 package ra.grammar;
 
+import org.antlr.v4.runtime.tree.ParseTree;
 import ra.Query;
 import ra.exceptions.RAException;
 import ra.grammar.gen.RAGrammarBaseVisitor;
 import ra.grammar.gen.RAGrammarParser;
 import ra.RA;
 
+import javax.xml.transform.Result;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
@@ -21,6 +24,16 @@ public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
     public RAEvalVisitor(RA ra, Query query) {
         this.ra = ra;
         this.query = query;
+    }
+
+    @Override
+    public String visit(ParseTree tree) {
+        // If exception has already been raised, do not continue
+        if (!query.isValid()) {
+            return "";
+        }
+
+        return super.visit(tree);
     }
 
     @Override
@@ -64,9 +77,7 @@ public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
 
     @Override
     public String visitUnaryExp(RAGrammarParser.UnaryExpContext ctx) {
-        StringBuilder output = new StringBuilder();
-
-        String operation = ctx.getChild(0).getText(); // Operation is first child always
+        String operation = ctx.getChild(0).getText();
         switch (operation) {
             case "\\select":
                 return String.format("SELECT * FROM ( %s ) %s WHERE %s ",
@@ -78,32 +89,56 @@ public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
                         visit(ctx.getChild(2)), generateAlias(random));
             case "\\rename":
                 // Get column names so we can rename them
-                String subQuery = "SELECT * FROM ( "
-                        + visit(ctx.getChild(2))
-                        + " ) " + generateAlias(random) + " ; ";
+                String subQuery = String.format("SELECT * FROM ( %s ) %s ;",
+                        visit(ctx.getChild(2)),
+                        generateAlias(random)
+                );
 
-                try { // TODO throw error?
-                    ResultSetMetaData rsmd = ra.evaluateSQLQuery(subQuery).getMetaData();
-                    String[] newNames = extractOperatorOption(ctx.getChild(1).getText()).split(",");
-
-                    output.append("SELECT ");
-                    for (int i = 0; i < newNames.length; i++) {
-                        output.append(rsmd.getColumnName(i + 1) + " AS " + newNames[i] + ",");
+                ResultSetMetaData rsmd; // Validate subquery
+                String[] columnNames = null;
+                try {
+                    rsmd = ra.evaluateSQLQuery(subQuery).getMetaData();
+                    columnNames = new String[rsmd.getColumnCount()];
+                    for (int i = 0; i < columnNames.length; i++) {
+                        columnNames[i] = rsmd.getColumnName(i + 1);
                     }
-                    output.deleteCharAt(output.length() - 1); // delete last ,
-
-                    output.append(" FROM ");
-                    output.append(" ( ");
-                    output.append(visit(ctx.getChild(2)));
-                    output.append(" ) " + generateAlias(random));
-                } catch (Exception e) {
-                    System.out.println(e.toString());
-                    return "ERROR"; // TODO better error response
+                } catch (SQLException e) {
+                    query.setException(new RAException(
+                            ctx.getStart().getLine(),
+                            ctx.getStart().getCharPositionInLine(),
+                            "SQLException: Unable to rename attributes",
+                            e
+                    ));
                 }
-                break;
+
+                StringBuilder output = new StringBuilder();
+                String[] newNames = extractOperatorOption(ctx.getChild(1).getText()).split(",");
+                if (newNames.length != columnNames.length) {
+                    query.setException(new RAException(
+                            ctx.getStart().getLine(),
+                            ctx.getStart().getCharPositionInLine(),
+                            "RAException: Number of rename columns does not match actual -- "
+                                    + "Input: " + Arrays.toString(newNames)
+                                    + " vs "
+                                    + "Actual: " + Arrays.toString(columnNames)
+                    ));
+                }
+
+                // Generate actualy rename query
+                output.append("SELECT ");
+                for (int i = 0; i < newNames.length; i++) {
+                    output.append(columnNames[i] + " AS " + newNames[i] + ",");
+                }
+                output.deleteCharAt(output.length() - 1); // delete last ,
+                output.append(
+                        String.format(" FROM ( %s ) %s",
+                                visit(ctx.getChild(2)), generateAlias(random))
+                );
+
+                return output.toString();
         }
 
-        return output.toString();
+        return "ERROR"; // Should never get here
     }
 
     @Override
@@ -177,7 +212,7 @@ public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
                         rightChild, generateAlias(random));
         }
 
-        return "ERROR"; // TODO come up with error scheme...
+        return "ERROR"; // Should never get here
     }
 
     private String generateAlias(Random rand) {
