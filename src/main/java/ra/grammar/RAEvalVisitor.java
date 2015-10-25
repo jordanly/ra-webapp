@@ -7,7 +7,6 @@ import ra.grammar.gen.RAGrammarBaseVisitor;
 import ra.grammar.gen.RAGrammarParser;
 import ra.RA;
 
-import javax.xml.transform.Result;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -71,6 +70,7 @@ public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
     @Override
     public String visitUnitExp(RAGrammarParser.UnitExpContext ctx) {
         // Corresponds with #unitExp directive not unit_exp rule
+        // Don't need error checking, done in other rules
         return String.format(" ( SELECT * FROM %s %s ) ",
                 visit(ctx.getChild(0)), generateAlias(random));
     }
@@ -78,15 +78,19 @@ public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
     @Override
     public String visitUnaryExp(RAGrammarParser.UnaryExpContext ctx) {
         String operation = ctx.getChild(0).getText();
+
+        String command = null;
         switch (operation) {
             case "\\select":
-                return String.format("SELECT * FROM ( %s ) %s WHERE %s ",
+                command = String.format("SELECT * FROM ( %s ) %s WHERE %s ",
                         visit(ctx.getChild(2)), generateAlias(random),
                         extractOperatorOption(ctx.getChild(1).getText()));
+                break;
             case "\\project":
-                return String.format("SELECT DISTINCT %s FROM ( %s ) %s ",
+                command = String.format("SELECT DISTINCT %s FROM ( %s ) %s ",
                         extractOperatorOption(ctx.getChild(1).getText()),
                         visit(ctx.getChild(2)), generateAlias(random));
+                break;
             case "\\rename":
                 // Get column names so we can rename them
                 String subQuery = String.format("SELECT * FROM ( %s ) %s ;",
@@ -111,7 +115,6 @@ public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
                     ));
                 }
 
-                StringBuilder output = new StringBuilder();
                 String[] newNames = extractOperatorOption(ctx.getChild(1).getText()).split(",");
                 if (newNames.length != columnNames.length) {
                     query.setException(new RAException(
@@ -124,7 +127,8 @@ public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
                     ));
                 }
 
-                // Generate actualy rename query
+                // Generate actually rename query
+                StringBuilder output = new StringBuilder();
                 output.append("SELECT ");
                 for (int i = 0; i < newNames.length; i++) {
                     output.append(columnNames[i] + " AS " + newNames[i] + ",");
@@ -135,10 +139,11 @@ public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
                                 visit(ctx.getChild(2)), generateAlias(random))
                 );
 
-                return output.toString();
+                command = output.toString();
+                break;
         }
 
-        return "ERROR"; // Should never get here
+        return (command == null ? "ERROR" : command);
     }
 
     @Override
