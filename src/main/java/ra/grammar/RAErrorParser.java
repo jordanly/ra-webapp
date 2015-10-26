@@ -1,33 +1,38 @@
 package ra.grammar;
 
+import org.antlr.v4.runtime.ParserRuleContext;
 import ra.Query;
 import ra.RA;
 import ra.exceptions.RAException;
-import ra.grammar.gen.RAGrammarParser;
 
 import java.sql.SQLException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * Created by jordanly on 10/25/15.
- */
 public class RAErrorParser {
     private RA ra;
-    private RAError[] UNARY_ERRORS = {
-        new RAError("column \"(.*)\" does not exist", "ERROR: Column %s does not exists"),
+
+    public static RAError[] UNARY_ERRORS = {
+        new RAError("column \"(.*)\" does not exist", "ERROR: Column '%s' does not exists.")
+    };
+    public static RAError[] UNIT_ERRORS = {
+        new RAError("relation \"(.*)\" does not exist", "ERROR: Table '%s' does not exist.")
     };
 
     public RAErrorParser(RA ra) {
         this.ra = ra;
     }
 
-    public boolean validateUnaryExp(Query query, String command,
-                                    RAGrammarParser.UnaryExpContext ctx) {
+    public boolean validate(Query query, String command, RAError[] rules,
+                            ParserRuleContext ctx) {
+        if (!query.isValid()) { // If error already occured, skip check
+            return false;
+        }
+
         try {
             ra.evaluateSQLQuery(command);
         } catch (SQLException e) {
-            for (RAError error : UNARY_ERRORS) {
+            for (RAError error : rules) {
                 if (error.check(e.getMessage())) {
                     System.out.println(ctx.getStart() + " " + ctx.getStop());
                     // Error matches
@@ -37,18 +42,24 @@ public class RAErrorParser {
                             error.printMessage(),
                             e
                     ));
+
                     return false;
                 }
             }
 
-            // No error exists
-            // TODO return error where we don't know what's going on
+            // If error but we don't know what error it is
+            query.setException(new RAException(
+                    ctx.getStart(),
+                    ctx.getStop(),
+                    "UNKNOWN: " + e.getMessage() // TODO fix?
+            ));
+            return false;
         }
 
         return true;
     }
 
-    private class RAError {
+    private static class RAError { // TODO find out why i have to make this static
         private Pattern pattern;
         private Matcher matcher;
         private String message;

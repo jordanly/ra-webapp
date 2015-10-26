@@ -19,8 +19,12 @@ public class RAErrorListener extends BaseErrorListener {
     @Override
     public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol,
                             int line, int charPositionInLine, String msg, RecognitionException e) {
+        String errorMsg = String.format("ERROR: unable to parse command at '%s' (line %s, position %s)",
+                e.getOffendingToken().getText(), e.getOffendingToken().getLine(),
+                e.getOffendingToken().getCharPositionInLine());
+
         query.setException(
-                new RAException(e.getOffendingToken(), e.getOffendingToken(), msg, e)
+                new RAException(e.getOffendingToken(), e.getOffendingToken(), errorMsg, e)
         );
     }
 }

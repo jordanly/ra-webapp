@@ -47,21 +47,7 @@ public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
 
     @Override
     public String visitTableExp(RAGrammarParser.TableExpContext ctx) {
-        String tableName = ctx.getText().toLowerCase();
-
-        // Check if table exists in database
-        try {
-            ra.evaluateSQLQuery("SELECT * FROM " + tableName + ";");
-        } catch (SQLException e) {
-            query.setException(new RAException(
-                    ctx.getStart(),
-                    ctx.getStart(),
-                    String.format("RAException: No such table '%s'", tableName),
-                    e
-            ));
-        }
-
-        return tableName;
+        return ctx.getText().toLowerCase();
     }
 
     @Override
@@ -72,9 +58,11 @@ public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
     @Override
     public String visitUnitExp(RAGrammarParser.UnitExpContext ctx) {
         // Corresponds with #unitExp directive not unit_exp rule
-        // Don't need error checking, done in other rules
-        return String.format(" ( SELECT * FROM %s %s ) ",
+        String command = String.format(" ( SELECT * FROM %s %s ) ",
                 visit(ctx.getChild(0)), generateAlias(random));
+
+        return (command != null && errorParser.validate(query, command,
+                RAErrorParser.UNIT_ERRORS, ctx) ? command : "ERROR");
     }
 
     @Override
@@ -101,7 +89,8 @@ public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
                         generateAlias(random)
                 );
 
-                ResultSetMetaData rsmd; // Validate subquery
+                // Get column names by executing child query
+                ResultSetMetaData rsmd;
                 String[] columnNames;
                 try {
                     rsmd = ra.evaluateSQLQuery(subQuery).getMetaData();
@@ -119,6 +108,7 @@ public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
                     break;
                 }
 
+                // Make sure number of attributes are same
                 String[] newNames = extractOperatorOption(ctx.getChild(1).getText()).split(",");
                 if (newNames.length != columnNames.length) {
                     query.setException(new RAException(
@@ -148,7 +138,8 @@ public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
                 break;
         }
 
-        return (command == null || !errorParser.validateUnaryExp(query, command, ctx) ? "ERROR" : command);
+        return (command != null && errorParser.validate(query, command,
+                RAErrorParser.UNARY_ERRORS, ctx) ? command : "ERROR");
     }
 
     @Override

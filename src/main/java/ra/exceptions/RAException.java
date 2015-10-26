@@ -9,10 +9,6 @@ public class RAException extends Exception {
     private String message;
     private Exception exception;
 
-    public RAException(Exception exception) {
-        this.exception = exception;
-    }
-
     public RAException(Token start, Token end, String message) {
         this.start = start;
         this.end = end;
@@ -27,8 +23,8 @@ public class RAException extends Exception {
     public JSONObject asJson() {
         JSONObject obj = new JSONObject();
 
-        obj.put("start", start.getLine() + "-" + start.getCharPositionInLine());
-        obj.put("end", end.getLine() + "-" + (end.getCharPositionInLine() + end.getText().length()));
+        obj.put("start", start.getLine() + ":" + start.getCharPositionInLine());
+        obj.put("end", end.getLine() + ":" + (end.getCharPositionInLine() + end.getText().length()));
         obj.put("message", message);
 
         return obj;
