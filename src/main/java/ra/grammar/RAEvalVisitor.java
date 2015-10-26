@@ -54,8 +54,8 @@ public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
             ra.evaluateSQLQuery("SELECT * FROM " + tableName + ";");
         } catch (SQLException e) {
             query.setException(new RAException(
-                    ctx.getStart().getLine(),
-                    ctx.getStart().getCharPositionInLine(),
+                    ctx.getStart(),
+                    ctx.getStart(),
                     String.format("RAException: No such table '%s'", tableName),
                     e
             ));
@@ -111,8 +111,8 @@ public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
                     }
                 } catch (SQLException e) {
                     query.setException(new RAException(
-                            ctx.getStart().getLine(),
-                            ctx.getStart().getCharPositionInLine(),
+                            ctx.getStart(),
+                            ctx.getStop(),
                             "SQLException: Unable to rename attributes",
                             e
                     ));
@@ -122,8 +122,8 @@ public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
                 String[] newNames = extractOperatorOption(ctx.getChild(1).getText()).split(",");
                 if (newNames.length != columnNames.length) {
                     query.setException(new RAException(
-                            ctx.getStart().getLine(),
-                            ctx.getStart().getCharPositionInLine(),
+                            ctx.getStart(),
+                            ctx.getStop(),
                             "RAException: Number of rename columns does not match actual -- "
                                     + "Input: " + Arrays.toString(newNames)
                                     + " vs "

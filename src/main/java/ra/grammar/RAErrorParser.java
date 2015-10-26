@@ -29,10 +29,11 @@ public class RAErrorParser {
         } catch (SQLException e) {
             for (RAError error : UNARY_ERRORS) {
                 if (error.check(e.getMessage())) {
+                    System.out.println(ctx.getStart() + " " + ctx.getStop());
                     // Error matches
                     query.setException(new RAException(
-                            -1,
-                            -1,
+                            ctx.getStart(),
+                            ctx.getStop(),
                             error.printMessage(),
                             e
                     ));
