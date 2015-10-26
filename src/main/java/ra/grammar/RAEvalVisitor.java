@@ -18,11 +18,13 @@ public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
     private Random random = new Random(12345);
     private Set<Integer> usedTempNumbers = new HashSet<>();
     private RA ra;
+    private RAErrorParser errorParser;
     private Query query;
 
     public RAEvalVisitor(RA ra, Query query) {
         this.ra = ra;
         this.query = query;
+        this.errorParser = new RAErrorParser(ra);
     }
 
     @Override
@@ -85,6 +87,7 @@ public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
                 command = String.format("SELECT * FROM ( %s ) %s WHERE %s ",
                         visit(ctx.getChild(2)), generateAlias(random),
                         extractOperatorOption(ctx.getChild(1).getText()));
+
                 break;
             case "\\project":
                 command = String.format("SELECT DISTINCT %s FROM ( %s ) %s ",
@@ -99,7 +102,7 @@ public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
                 );
 
                 ResultSetMetaData rsmd; // Validate subquery
-                String[] columnNames = null;
+                String[] columnNames;
                 try {
                     rsmd = ra.evaluateSQLQuery(subQuery).getMetaData();
                     columnNames = new String[rsmd.getColumnCount()];
@@ -113,6 +116,7 @@ public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
                             "SQLException: Unable to rename attributes",
                             e
                     ));
+                    break;
                 }
 
                 String[] newNames = extractOperatorOption(ctx.getChild(1).getText()).split(",");
@@ -125,6 +129,7 @@ public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
                                     + " vs "
                                     + "Actual: " + Arrays.toString(columnNames)
                     ));
+                    break;
                 }
 
                 // Generate actually rename query
@@ -143,7 +148,7 @@ public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
                 break;
         }
 
-        return (command == null ? "ERROR" : command);
+        return (command == null || !errorParser.validateUnaryExp(query, command, ctx) ? "ERROR" : command);
     }
 
     @Override
