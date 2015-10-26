@@ -37,12 +37,24 @@ public class RA {
     }
 
     public static void main(String[] args) {
-        String query = ("\\project_{bar} (\n" +
-                "    \\select_{drinker + 'Ben'} Frequents\n" +
-                ");");
+        String query = ("\\project_{drinker} (\n" +
+                "\t\\select_{beer='Amstel'} Likes\t\n" +
+                "\t)\n" +
+                "\\diff\n" +
+                "\\project_{drinker, beer} (\n" +
+                "\t\\select_{beer='Corona'} Likes\n" +
+                "\t)\n" +
+                ";");
         System.out.println(query);
         RA ra = new RA(TempUtil.createLocalDBConnection());
         Query ans = ra.evaluateRAQuery(query);
         System.out.println(ans.toJson());
+
+//        try {
+//            ra.evaluateSQLQuery("SELECT * FROM (  ( SELECT * FROM frequents t51 )  ) t80 WHERE drinker = 'Ben' ");
+//            System.out.println("Success");
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
     }
 }

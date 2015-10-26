@@ -13,10 +13,15 @@ public class RAErrorParser {
     private RA ra;
 
     public static RAError[] UNARY_ERRORS = {
-        new RAError("column \"(.*)\" does not exist", "ERROR: Column '%s' does not exists.")
+        new RAError("column \"(.*)\" does not exist", "ERROR: Column '%s' does not exists"),
+        new RAError("syntax error at or near \"(.*)\"", "ERROR: Syntax error at or near '%s'"),
+        new RAError("argument of WHERE must be type boolean", "ERROR: Invalid condition statement")
     };
     public static RAError[] UNIT_ERRORS = {
-        new RAError("relation \"(.*)\" does not exist", "ERROR: Table '%s' does not exist.")
+        new RAError("relation \"(.*)\" does not exist", "ERROR: Table '%s' does not exist")
+    };
+    public static RAError[] BINARY_ERRORS = {
+        new RAError("must have the same number of columns", "ERROR: Each relation must have the same number of columns")
     };
 
     public RAErrorParser(RA ra) {
@@ -29,8 +34,13 @@ public class RAErrorParser {
             return false;
         }
 
+        // add SELECT * FROM to command since not all of our nodes are complete
+        // sql statements (binary ones for example)
+        String formattedCommand = String.format("SELECT * FROM ( %s ) %s",
+                command, "validateQueryTempTable");
+
         try {
-            ra.evaluateSQLQuery(command);
+            ra.evaluateSQLQuery(formattedCommand);
         } catch (SQLException e) {
             for (RAError error : rules) {
                 if (error.check(e.getMessage())) {

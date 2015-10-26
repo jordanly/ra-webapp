@@ -1,5 +1,6 @@
 package ra.grammar;
 
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 import ra.Query;
 import ra.exceptions.RAException;
@@ -138,6 +139,7 @@ public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
                 break;
         }
 
+        System.out.println(command);
         return (command != null && errorParser.validate(query, command,
                 RAErrorParser.UNARY_ERRORS, ctx) ? command : "ERROR");
     }
@@ -166,7 +168,7 @@ public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
         String operation = ctx.getChild(1).getText();
         String right = visit(ctx.getChild(2));
 
-        return generateBinaryStatement(left, right, operation);
+        return generateBinaryStatement(left, right, operation, ctx);
     }
 
     @Override
@@ -185,35 +187,42 @@ public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
         String left = visit(ctx.getChild(0));
         String right = visit(ctx.getChild(2));
 
-        return generateBinaryStatement(left, right, operation);
+        return generateBinaryStatement(left, right, operation, ctx);
     }
 
     private String generateBinaryStatement(String leftChild, String rightChild,
-                                           String operation) {
+                                           String operation, ParserRuleContext ctx) {
+        String command = null;
         switch (operation) {
             case "\\join":
-                return String.format("( %s ) %s NATURAL JOIN ( %s ) %s",
+                command = String.format("( %s ) %s NATURAL JOIN ( %s ) %s",
                         leftChild, generateAlias(random),
                         rightChild, generateAlias(random));
+                break;
             case "\\cross":
-                return String.format("( %s ) %s CROSS JOIN ( %s ) %s",
+                command = String.format("( %s ) %s CROSS JOIN ( %s ) %s",
                         leftChild, generateAlias(random),
                         rightChild, generateAlias(random));
+                break;
             case "\\union":
-                return String.format("SELECT * FROM ( %s ) %s UNION SELECT * FROM ( %s ) %s",
+                command = String.format("SELECT * FROM ( %s ) %s UNION SELECT * FROM ( %s ) %s",
                         leftChild, generateAlias(random),
                         rightChild, generateAlias(random));
+                break;
             case "\\diff":
-                return String.format("SELECT * FROM ( %s ) %s EXCEPT SELECT * FROM ( %s ) %s",
+                command = String.format("SELECT * FROM ( %s ) %s EXCEPT SELECT * FROM ( %s ) %s",
                         leftChild, generateAlias(random),
                         rightChild, generateAlias(random));
+                break;
             case "\\intersect":
-                return String.format("SELECT * FROM ( %s ) %s INTERSECT SELECT * FROM ( %s ) %s",
+                command = String.format("SELECT * FROM ( %s ) %s INTERSECT SELECT * FROM ( %s ) %s",
                         leftChild, generateAlias(random),
                         rightChild, generateAlias(random));
+                break;
         }
 
-        return "ERROR"; // Should never get here
+        return (command != null && errorParser.validate(query, command,
+                RAErrorParser.BINARY_ERRORS, ctx) ? command : "ERROR");
     }
 
     private String generateAlias(Random rand) {
@@ -225,6 +234,8 @@ public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
         return "t" + newVal;
     }
 
+    // TODO should i also validate what is in here? what are characters that are never allowed
+    // TODO only allow alphanumeric characters and =? also should i remove white space
     private String extractOperatorOption(String val) {
         return val.substring(2, val.length() - 1); // remove "_{" + "}"
     }
