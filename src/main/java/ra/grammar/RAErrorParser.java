@@ -81,10 +81,7 @@ public class RAErrorParser {
 
         public boolean check(String s) {
             this.matcher = pattern.matcher(s);
-            if (matcher.find()) {
-                return true;
-            }
-            return false;
+            return matcher.find();
         }
 
         public String printMessage() {

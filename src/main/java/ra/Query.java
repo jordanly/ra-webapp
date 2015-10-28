@@ -14,14 +14,12 @@ import util.ResultSetUtilities;
 import java.sql.ResultSet;
 
 public class Query {
+    private ParseTree tree;
+    private RAException exception;
+    private ResultSet resultSet;
     private String raQuery;
     private String sqlQuery;
-    private ParseTree tree;
-    private ResultSet resultSet;
 
-    private RAException exception;
-
-    // Every query begins with an RA query string
     public Query(RA ra, String raQuery) {
         this.raQuery = raQuery;
         init(ra);
@@ -32,8 +30,13 @@ public class Query {
         RAGrammarLexer lexer = new RAGrammarLexer(inputStream);
         CommonTokenStream tokenStream = new CommonTokenStream(lexer);
         RAGrammarParser parser = new RAGrammarParser(tokenStream);
+
+        /**
+         * Remove the default ANTLR listener before adding our own listener. The
+         * default ANTLR listener just prints parsing errors to STDERR"
+         */
+        parser.removeErrorListeners();
         parser.addErrorListener(new RAErrorListener(this));
-        // TODO remove default listener (which just prints to stderr)
 
         this.tree = parser.exp0();
         this.sqlQuery = new RAEvalVisitor(ra, this).visit(tree);

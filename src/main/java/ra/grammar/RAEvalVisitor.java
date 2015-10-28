@@ -11,13 +11,24 @@ import ra.RA;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
 
+/**
+ * RAEvalVisitor contains methods that processes nodes in the AST created by
+ * the grammar in 'RAGrammar.g4' (which represents an RA query) and converts
+ * them to their corresponding SQL statement. This class will build the query
+ * bottom-up.
+ *
+ * The main call to parse a query will be the method 'visitExp0' as exp0 will
+ * always be the root of the RA query (as dictated by the grammar).
+ *
+ * RAEvalVisitor will attempt to validate each node by sending the command
+ * generated to RAErrorParser (which executes each query and contains methods
+ * for dealing with different types of exceptions. Right now, RAEvalVisitor will
+ * only try to validate unit, unary, binary, and join nodes as they are the only
+ * ones that currently generate non-trivial statements.
+ */
 public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
-    private Random random = new Random(12345);
-    private Set<Integer> usedTempNumbers = new HashSet<>();
+    private int tempCount;
     private RA ra;
     private RAErrorParser errorParser;
     private Query query;
@@ -25,12 +36,13 @@ public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
     public RAEvalVisitor(RA ra, Query query) {
         this.ra = ra;
         this.query = query;
+
+        this.tempCount = 0;
         this.errorParser = new RAErrorParser(ra);
     }
 
     @Override
     public String visit(ParseTree tree) {
-        // If exception has already been raised, do not continue
         if (!query.isValid()) {
             return "";
         }
@@ -40,10 +52,10 @@ public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
 
     @Override
     public String visitExp0(RAGrammarParser.Exp0Context ctx) {
-        usedTempNumbers.clear(); // Clear previous temp variables used for aliasing
+        tempCount = 0;
 
         return String.format(" SELECT * FROM ( %s ) %s ",
-                visit(ctx.getChild(0)), generateAlias(random));
+                visit(ctx.getChild(0)), generateAlias());
     }
 
     @Override
@@ -60,7 +72,7 @@ public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
     public String visitUnitExp(RAGrammarParser.UnitExpContext ctx) {
         // Corresponds with #unitExp directive not unit_exp rule
         String command = String.format(" ( SELECT * FROM %s %s ) ",
-                visit(ctx.getChild(0)), generateAlias(random));
+                visit(ctx.getChild(0)), generateAlias());
 
         return (command != null && errorParser.validate(query, command,
                 RAErrorParser.UNIT_ERRORS, ctx) ? command : "ERROR");
@@ -74,23 +86,21 @@ public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
         switch (operation) {
             case "\\select":
                 command = String.format("SELECT * FROM ( %s ) %s WHERE %s ",
-                        visit(ctx.getChild(2)), generateAlias(random),
+                        visit(ctx.getChild(2)), generateAlias(),
                         extractOperatorOption(ctx.getChild(1).getText()));
 
                 break;
             case "\\project":
                 command = String.format("SELECT DISTINCT %s FROM ( %s ) %s ",
                         extractOperatorOption(ctx.getChild(1).getText()),
-                        visit(ctx.getChild(2)), generateAlias(random));
+                        visit(ctx.getChild(2)), generateAlias());
                 break;
             case "\\rename":
-                // Get column names so we can rename them
+                // Get the columns that we will be renaming from the subquery
                 String subQuery = String.format("SELECT * FROM ( %s ) %s ;",
                         visit(ctx.getChild(2)),
-                        generateAlias(random)
+                        generateAlias()
                 );
-
-                // Get column names by executing child query
                 ResultSetMetaData rsmd;
                 String[] columnNames;
                 try {
@@ -123,16 +133,16 @@ public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
                     break;
                 }
 
-                // Generate actually rename query
+                // Basic error checking done, generate final rename query
                 StringBuilder output = new StringBuilder();
                 output.append("SELECT ");
                 for (int i = 0; i < newNames.length; i++) {
                     output.append(columnNames[i] + " AS " + newNames[i] + ",");
                 }
-                output.deleteCharAt(output.length() - 1); // delete last ,
+                output.deleteCharAt(output.length() - 1); // Delete last ','
                 output.append(
                         String.format(" FROM ( %s ) %s",
-                                visit(ctx.getChild(2)), generateAlias(random))
+                                visit(ctx.getChild(2)), generateAlias())
                 );
 
                 command = output.toString();
@@ -145,7 +155,7 @@ public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
 
     @Override
     public String visitSingleUnaryExp(RAGrammarParser.SingleUnaryExpContext ctx) {
-        return visit(ctx.getChild(0)); // Visit single unaryExp child
+        return visit(ctx.getChild(0));
     }
 
     @Override
@@ -156,8 +166,8 @@ public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
         String right = visit(ctx.getChild(3));
 
         return String.format("( %s ) %s JOIN ( %s ) %s ON ( %s )",
-                left, generateAlias(random),
-                right, generateAlias(random),
+                left, generateAlias(),
+                right, generateAlias(),
                 condition);
     }
 
@@ -195,28 +205,28 @@ public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
         switch (operation) {
             case "\\join":
                 command = String.format("( %s ) %s NATURAL JOIN ( %s ) %s",
-                        leftChild, generateAlias(random),
-                        rightChild, generateAlias(random));
+                        leftChild, generateAlias(),
+                        rightChild, generateAlias());
                 break;
             case "\\cross":
                 command = String.format("( %s ) %s CROSS JOIN ( %s ) %s",
-                        leftChild, generateAlias(random),
-                        rightChild, generateAlias(random));
+                        leftChild, generateAlias(),
+                        rightChild, generateAlias());
                 break;
             case "\\union":
                 command = String.format("SELECT * FROM ( %s ) %s UNION SELECT * FROM ( %s ) %s",
-                        leftChild, generateAlias(random),
-                        rightChild, generateAlias(random));
+                        leftChild, generateAlias(),
+                        rightChild, generateAlias());
                 break;
             case "\\diff":
                 command = String.format("SELECT * FROM ( %s ) %s EXCEPT SELECT * FROM ( %s ) %s",
-                        leftChild, generateAlias(random),
-                        rightChild, generateAlias(random));
+                        leftChild, generateAlias(),
+                        rightChild, generateAlias());
                 break;
             case "\\intersect":
                 command = String.format("SELECT * FROM ( %s ) %s INTERSECT SELECT * FROM ( %s ) %s",
-                        leftChild, generateAlias(random),
-                        rightChild, generateAlias(random));
+                        leftChild, generateAlias(),
+                        rightChild, generateAlias());
                 break;
         }
 
@@ -224,13 +234,18 @@ public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
                 RAErrorParser.BINARY_ERRORS, ctx) ? command : "ERROR");
     }
 
-    private String generateAlias(Random rand) {
-        int newVal;
-        do {
-            newVal = rand.nextInt(100);
-        } while (usedTempNumbers.contains(newVal));
+    /**
+     * This visitor only generates statements that are designed for a
+     * PostgreSQL database. One detail to keep in mind is that when having nested
+     * subqueries (which is how the query is built), you must give an alias after
+     * a 'FROM x'.
+     *
+     * The method generateAlias() returns a temporary, unique string for use
+     * after a 'FROM x' statement.
+     */
 
-        return "t" + newVal;
+    private String generateAlias() {
+        return "t" + tempCount++;
     }
 
     // TODO should i also validate what is in here? what are characters that are never allowed

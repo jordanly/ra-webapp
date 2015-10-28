@@ -1,5 +1,4 @@
 package ra;
-import util.TempUtil;
 
 import java.sql.*;
 
@@ -34,22 +33,5 @@ public class RA {
         st.execute(sqlQuery);
 
         return st.getResultSet();
-    }
-
-    public static void main(String[] args) {
-        String query = ("\\project_{bar} (\n" +
-                "\t\\select_{drinker = 'Ben'} Frequents\n" +
-                ");");
-        System.out.println(query);
-        RA ra = new RA(TempUtil.createLocalDBConnection());
-        Query ans = ra.evaluateRAQuery(query);
-        System.out.println(ans.toJson());
-
-//        try {
-//            ra.evaluateSQLQuery("SELECT * FROM (  ( SELECT * FROM frequents t51 )  ) t80 WHERE drinker = 'Ben' ");
-//            System.out.println("Success");
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
     }
 }
