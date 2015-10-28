@@ -44,8 +44,7 @@ public class RAErrorParser {
         } catch (SQLException e) {
             for (RAError error : rules) {
                 if (error.check(e.getMessage())) {
-                    System.out.println(ctx.getStart() + " " + ctx.getStop());
-                    // Error matches
+                   // Error matches
                     query.setException(new RAException(
                             ctx.getStart(),
                             ctx.getStop(),

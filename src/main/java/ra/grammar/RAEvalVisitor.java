@@ -139,7 +139,6 @@ public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
                 break;
         }
 
-        System.out.println(command);
         return (command != null && errorParser.validate(query, command,
                 RAErrorParser.UNARY_ERRORS, ctx) ? command : "ERROR");
     }

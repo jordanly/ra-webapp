@@ -37,14 +37,9 @@ public class RA {
     }
 
     public static void main(String[] args) {
-        String query = ("\\project_{drinker} (\n" +
-                "\t\\select_{beer='Amstel'} Likes\t\n" +
-                "\t)\n" +
-                "\\diff\n" +
-                "\\project_{drinker, beer} (\n" +
-                "\t\\select_{beer='Corona'} Likes\n" +
-                "\t)\n" +
-                ";");
+        String query = ("\\project_{bar} (\n" +
+                "\t\\select_{drinker = 'Ben'} Frequents\n" +
+                ");");
         System.out.println(query);
         RA ra = new RA(TempUtil.createLocalDBConnection());
         Query ans = ra.evaluateRAQuery(query);
