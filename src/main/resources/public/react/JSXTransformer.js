@@ -14683,6 +14683,7 @@ function visitTemplateLiteral(traverse, node, path, state) {
       utils.move(templateElement.range[0], state);
       utils.catchupNewlines(templateElement.range[1], state);
     } else {  // templateElement.value.raw === ''
+      // Concatenat adjacent substitutions, e.g. `${x}${y}`. Empty templates
       // appear before the first and after the last element - nothing to add in
       // those cases.
       if (ii > 0 && !templateElement.tail) {

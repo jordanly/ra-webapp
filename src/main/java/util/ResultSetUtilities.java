@@ -23,13 +23,13 @@ public final class ResultSetUtilities {
             for (int i = 1; i <= numCols; i++) {
                 sb.append(md.getColumnName(i) + " | ");
             }
-            sb.append("<br />");
+            sb.append("\n");
 
             while (rs.next()) {
                 for (int i = 1; i <= numCols; i++) {
                     sb.append(rs.getString(i) + " | ");
                 }
-                sb.append("<br />");
+                sb.append("\n");
             }
             return sb.toString();
         } catch (SQLException e) {
