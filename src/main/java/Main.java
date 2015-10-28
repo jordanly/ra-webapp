@@ -47,7 +47,7 @@ public class Main {
         get("/query/*", (req, res) -> {
             String qString = "";
             if (req.splat()[0] != null) {
-                qString = ra.evaluateRAQuery(req.splat()[0]).toString();
+                qString = ra.evaluateRAQuery(req.splat()[0]).toJson();
             }
             return qString;
         });
