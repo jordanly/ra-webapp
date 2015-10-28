@@ -22,16 +22,8 @@ public class Main {
         staticFileLocation("/public");
         Configuration viewDir = new Configuration(Configuration.VERSION_2_3_22);
         viewDir.setClassForTemplateLoading(Main.class, "/templates/");
-//        port(8000);
-        port(getHerokuAssignedPort());
-
-        /**
-         * Main page endpoint
-         */
-//        get("/", (req, res) -> {
-//            return new ModelAndView(new HashMap<String, Object>(), "frontend.ftl");
-//        }, new FreeMarkerEngine(viewDir));
-
+        port(8000);
+//        port(getHerokuAssignedPort());
 
         Connection conn;
         if (System.getenv("DATABASE_URL") != null) {
@@ -40,21 +32,25 @@ public class Main {
             conn = TempUtil.createLocalDBConnection();
         }
         RA ra = new RA(conn);
+        System.out.println("test");
+
+        /**
+         * Main page endpoint
+         */
+        get("/", (req, res) -> {
+            return new ModelAndView(new HashMap<String, Object>(), "frontend.ftl");
+        }, new FreeMarkerEngine(viewDir));
+
         /**
          * RA-query endpoint
          */
-        get("/", (req, res) -> {
-            Map<String, Object> model = new HashMap<String, Object>();
-
+        get("/query/*", (req, res) -> {
             String qString = "";
-            if (req.queryParams("ra_query") != null) {
-                qString = ra.evaluateRAQuery(req.queryParams("ra_query")).toString();
+            if (req.splat()[0] != null) {
+                qString = ra.evaluateRAQuery(req.splat()[0]).toJson();
             }
-
-            model.put("ra_output", qString);
-
-            return new ModelAndView(model, "form.ftl");
-        }, new FreeMarkerEngine(viewDir));
+            return qString;
+        });
     }
 
     private static int getHerokuAssignedPort() {
