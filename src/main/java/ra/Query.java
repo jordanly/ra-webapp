@@ -1,11 +1,13 @@
 package ra;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.BailErrorStrategy;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.json.JSONObject;
 import ra.exceptions.RAException;
 import ra.grammar.RAErrorListener;
+import ra.grammar.RAErrorStrategy;
 import ra.grammar.RAEvalVisitor;
 import ra.grammar.gen.RAGrammarLexer;
 import ra.grammar.gen.RAGrammarParser;
@@ -30,6 +32,12 @@ public class Query {
         RAGrammarLexer lexer = new RAGrammarLexer(inputStream);
         CommonTokenStream tokenStream = new CommonTokenStream(lexer);
         RAGrammarParser parser = new RAGrammarParser(tokenStream);
+
+        /**
+         * Do not use the default ANTLRErrorStrategy as it attempts to fix
+         * user's queries. Instead, just halt on first error.
+         */
+        parser.setErrorHandler(new RAErrorStrategy());
 
         /**
          * Remove the default ANTLR listener before adding our own listener. The

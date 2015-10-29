@@ -3,6 +3,7 @@ package ra.grammar;
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
+import org.antlr.v4.runtime.Token;
 import ra.Query;
 import ra.exceptions.RAException;
 
@@ -19,12 +20,8 @@ public class RAErrorListener extends BaseErrorListener {
     @Override
     public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol,
                             int line, int charPositionInLine, String msg, RecognitionException e) {
-        String errorMsg = String.format("ERROR: unable to parse command at '%s' (line %s, position %s)",
-                e.getOffendingToken().getText(), e.getOffendingToken().getLine(),
-                e.getOffendingToken().getCharPositionInLine());
-
         query.setException(
-                new RAException(e.getOffendingToken(), e.getOffendingToken(), errorMsg, e)
+                new RAException(e.getOffendingToken(), e.getOffendingToken(), msg, e)
         );
     }
 }
