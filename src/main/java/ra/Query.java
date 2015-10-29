@@ -67,7 +67,7 @@ public class Query {
         this.exception = e;
     }
 
-    public String toJson() {
+    public JSONObject toJson() {
         JSONObject obj = new JSONObject();
 
         obj.put("query", raQuery);
@@ -79,7 +79,7 @@ public class Query {
             obj.put("data", ResultSetUtilities.toJSONArray(resultSet));
         }
 
-        return obj.toString(4);
+        return obj;
     }
 
     public ResultSet getResultSet() {

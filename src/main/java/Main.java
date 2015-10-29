@@ -55,7 +55,7 @@ public class Main {
                     results.put(ra.evaluateRAQuery(query + ";").toJson());
                 }
             }
-            return results;
+            return results.toString(4);
         });
     }
 

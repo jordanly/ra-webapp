@@ -38,7 +38,7 @@ public class RA {
     }
 
     public static void main(String[] args) {
-        String query = ("1234;");
+        String query = ("\\select_{drinker='Ben'} likes");
         System.out.println(query);
         RA ra = new RA(TempUtil.createLocalDBConnection());
         Query ans = ra.evaluateRAQuery(query);
