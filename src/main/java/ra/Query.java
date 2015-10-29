@@ -11,6 +11,7 @@ import ra.grammar.gen.RAGrammarLexer;
 import ra.grammar.gen.RAGrammarParser;
 import util.ResultSetUtilities;
 
+import javax.xml.transform.Result;
 import java.sql.ResultSet;
 
 public class Query {
@@ -66,6 +67,7 @@ public class Query {
         if (exception != null) {
             obj.put("error", exception.asJson());
         } else {
+            obj.put("columnNames", ResultSetUtilities.columnsToJSONArray(resultSet));
             obj.put("data", ResultSetUtilities.toJSONArray(resultSet));
         }
 
