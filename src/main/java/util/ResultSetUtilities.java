@@ -61,6 +61,20 @@ public final class ResultSetUtilities {
         return rows;
     }
 
+    public static JSONArray columnsToJSONArray(ResultSet rs) {
+        JSONArray cols = new JSONArray();
+
+        try {
+            ResultSetMetaData rsmd = rs.getMetaData();
+            for (int i = 1; i <= rsmd.getColumnCount(); i++) {
+                cols.put(rsmd.getColumnName(i));
+            }
+        } catch (Exception e) {
+            e.printStackTrace(); // TODO throw real error
+        }
+
+        return cols;
+    }
 
     public static void print(ResultSet rs) {
         try {

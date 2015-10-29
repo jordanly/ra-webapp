@@ -1,5 +1,6 @@
 import static spark.Spark.*;
 
+import org.json.JSONArray;
 import ra.RA;
 import spark.ModelAndView;
 import spark.template.freemarker.FreeMarkerEngine;
@@ -32,7 +33,6 @@ public class Main {
             conn = TempUtil.createLocalDBConnection();
         }
         RA ra = new RA(conn);
-        System.out.println("test");
 
         /**
          * Main page endpoint
@@ -45,11 +45,17 @@ public class Main {
          * RA-query endpoint
          */
         get("/query/*", (req, res) -> {
-            String qString = "";
-            if (req.splat()[0] != null) {
-                qString = ra.evaluateRAQuery(req.splat()[0]).toJson();
+            JSONArray results = new JSONArray();
+            String queryString = req.splat()[0];
+            if (queryString != null) {
+                // Divide up the multiple queries
+                String[] queries = queryString.split(";");
+                for (String query : queries)
+                {
+                    results.put(ra.evaluateRAQuery(query + ";").toJson());
+                }
             }
-            return qString;
+            return results;
         });
     }
 
