@@ -34,3 +34,32 @@ Then, add rows to database:
 
 Then you should be done! You can access the database using "heroku pg:psql" and
 the URL will be an environment variable "DATABASE_URL".
+
+Front-Back API Details
+=========
+JSON Format: JSONArray consisting of results for each query.
+
+    [
+        {
+            isError: boolean
+            query: String of original query
+            error:
+                {
+                    start: line:column
+                    end: line:column
+                    message: String error message
+                }
+            columnNames: [col1, col2, ...]
+            data: list of maps for each tuple
+                [
+                    {
+                        col1: data1
+                        col2: data2
+                        ....
+                    },
+                    ....
+                ]
+        },
+        ...
+    ]
+
