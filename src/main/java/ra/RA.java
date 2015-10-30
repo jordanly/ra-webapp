@@ -42,7 +42,7 @@ public class RA {
         System.out.println(query);
         RA ra = new RA(TempUtil.createLocalDBConnection());
         Query ans = ra.evaluateRAQuery(query);
-        System.out.println(ans.toJson());
+        System.out.println(ans.toJson().toString(4));
 
 //        try {
 //            ra.evaluateSQLQuery("SELECT * FROM (  ( SELECT * FROM frequents t51 )  ) t80 WHERE drinker = 'Ben' ");
