@@ -1,6 +1,8 @@
 package ra;
 
 
+import util.TempUtil;
+
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.util.ArrayList;
@@ -18,14 +20,14 @@ public class RATest {
 
     @org.junit.Before
     public void setUp() throws Exception {
-        ra = new RA();
+        ra = new RA(TempUtil.createLocalDBConnection());
     }
 
     @org.junit.Test
     public void testQueryA() throws Exception {
         ResultSet rs = ra.evaluateRAQuery("\\project_{bar} (\n" +
                 "\t\\select_{drinker = 'Ben'} Frequents\n" +
-                ");");
+                ");").getResultSet();
         String[][] ans = new String[][]{{"Satisfaction"}, {"Talk of the Town"}, {"James Joyce Pub"}};
 
         assertTrue(validateResultSet(rs, ans));
@@ -37,7 +39,7 @@ public class RATest {
                 "\t(\\select_{bar='James Joyce Pub' and times_a_week > 1} Frequents)\n" +
                 "\t\\join_{drinker=name} \n" +
                 "\tDrinker\n" +
-                ");");
+                ");").getResultSet();
         String[][] ans = new String[][]{{"Amy", "100 W. Main Street"}, {"Eve", "100 W. Main Street"}};
 
         assertTrue(validateResultSet(rs, ans));
@@ -49,7 +51,7 @@ public class RATest {
                 "\t\\select_{drinker='Eve'} Likes\n" +
                 "\t\\join\n" +
                 "\t\\select_{price<=2.75} Serves\n" +
-                ");");
+                ");").getResultSet();
         String[][] ans = new String[][]{{"Down Under Pub"}, {"Satisfaction"},
                 {"Talk of the Town"}, {"The Edge"}};
 
@@ -65,7 +67,7 @@ public class RATest {
                 "\\project_{drinker} (\n" +
                 "\t\\select_{beer='Corona'} Likes\n" +
                 "\t)\n" +
-                ";");
+                ";").getResultSet();
 
         String[][] ans = new String[][]{{"Ben"}};
 
@@ -86,7 +88,7 @@ public class RATest {
                 "\t)\n" +
                 "\t\\join\n" +
                 "\t\\select_{drinker='Dan'} Likes\n" +
-                ");\n");
+                ");\n").getResultSet();
         String[][] ans = new String[][]{{"James Joyce Pub", "Erdinger"},
                 {"Satisfaction", "Corona"},
                 {"Satisfaction", "Dixie"},
@@ -104,7 +106,7 @@ public class RATest {
                 "  \\select_{price1 < price2 and price2 < price3}\n" +
                 "    (\\rename_{bar1, beer1, price1} Serves \\cross\n" +
                 "     \\rename_{bar2, beer2, price2} Serves \\cross\n" +
-                "     \\rename_{bar3, beer3, price3} Serves);");
+                "     \\rename_{bar3, beer3, price3} Serves);").getResultSet();
         String[][] ans = new String[][]{{"Satisfaction", "Budweiser", "2.25"},
                 {"Down Under Pub", "Budweiser", "2.25"},
                 {"Talk of the Town", "Budweiser", "2.20"}};
@@ -121,7 +123,7 @@ public class RATest {
                 "\t\\join\n" +
                 "\tServes\n" +
                 ")\n" +
-                ";");
+                ";").getResultSet();
         String[][] ans = new String[][]{{"Coy", "The Edge"}, {"Coy", "Down Under Pub"}};
 
         assertTrue(validateResultSet(rs, ans));
@@ -140,7 +142,7 @@ public class RATest {
                 "\t\t\\join\n" +
                 "\t\tServes\n" +
                 "\t)\n" +
-                ");");
+                ");").getResultSet();
         String[][] ans = new String[][]{{"Ben"}, {"Amy"}, {"Eve"}, {"Dan"}};
 
         assertTrue(validateResultSet(rs, ans));
@@ -154,7 +156,7 @@ public class RATest {
                 "\t\\project_{drinker,bar} (Likes \\join Serves)\n" +
                 "\t\\diff\n" +
                 "\t\\project_{drinker,bar} Frequents\n" +
-                ");");
+                ");").getResultSet();
         String[][] ans = new String[][]{{"Dan"}};
 
         assertTrue(validateResultSet(rs, ans));

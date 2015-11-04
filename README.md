@@ -7,12 +7,10 @@ TODO
 
 Build Steps
 ===========
-Using IntelliJ:
-    - Create a JAR artifact
-    - Make sure the output directory is resources/META-INF
-    - Build -> Generate Artifacts
-    - This creates a jar file with all dependenceis in ra3/out/..../ra3_jar
-    - java -jar [ JAR name ]
+Clone repo
+mvn compile
+mvn package
+run generated jar in target folder
 
 
 PostgreSQL
@@ -21,7 +19,45 @@ CREATE USER
 GRANT PRIVILEGES
 Connect to connection string in Java
 
-NOTES
-=====
-We need to generate aliases when using FROM in some cases. Will probably just
-generate aliases everywhere we use FROM
+Heroku PostgreSQL DB Setup
+==========================
+
+First, add the PostgreSQL addon to create the database for the web app;
+
+"heroku addons:create heroku-postgresql:hobby-dev"
+
+Then, add rows to database:
+
+"cat setup-queries.sql | heroku pg:psql --app ra-beers-example"
+
+Then you should be done! You can access the database using "heroku pg:psql" and
+the URL will be an environment variable "DATABASE_URL".
+
+Front-Back API Details
+=========
+JSON Format: JSONArray consisting of results for each query.
+
+    [
+        {
+            isError: boolean
+            query: String of original query
+            error:
+                {
+                    start: line:column
+                    end: line:column
+                    message: String error message
+                }
+            columnNames: [col1, col2, ...]
+            data: list of maps for each tuple
+                [
+                    {
+                        col1: data1
+                        col2: data2
+                        ....
+                    },
+                    ....
+                ]
+        },
+        ...
+    ]
+
