@@ -15,7 +15,8 @@ public class RAErrorParser {
     public static RAError[] UNARY_ERRORS = {
         new RAError("column \"(.*)\" does not exist", "ERROR: Column '%s' does not exists"),
         new RAError("syntax error at or near \"(.*)\"", "ERROR: Syntax error at or near '%s'"),
-        new RAError("argument of WHERE must be type boolean", "ERROR: Invalid condition statement")
+        new RAError("argument of WHERE must be type boolean", "ERROR: Invalid condition statement"),
+        new RAError("unterminated quoted string", "ERROR: Unterminated quoted string")
     };
     public static RAError[] UNIT_ERRORS = {
         new RAError("relation \"(.*)\" does not exist", "ERROR: Table '%s' does not exist")
@@ -63,6 +64,17 @@ public class RAErrorParser {
                     "UNKNOWN: " + e.getMessage() // TODO fix?
             ));
             return false;
+        }
+
+        return true;
+    }
+
+    public boolean validateOperatorOption(String val) {
+        String operator = "TODO";
+        switch (operator) {
+            case "\\select":
+                //TODO
+                break;
         }
 
         return true;

@@ -243,7 +243,6 @@ public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
      * The method generateAlias() returns a temporary, unique string for use
      * after a 'FROM x' statement.
      */
-
     private String generateAlias() {
         return "t" + tempCount++;
     }

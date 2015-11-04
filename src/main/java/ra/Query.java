@@ -1,7 +1,6 @@
 package ra;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
-import org.antlr.v4.runtime.BailErrorStrategy;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.json.JSONObject;
@@ -13,7 +12,6 @@ import ra.grammar.gen.RAGrammarLexer;
 import ra.grammar.gen.RAGrammarParser;
 import util.ResultSetUtilities;
 
-import javax.xml.transform.Result;
 import java.sql.ResultSet;
 
 public class Query {
