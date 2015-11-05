@@ -23,14 +23,14 @@ public class Main {
         staticFileLocation("/public");
         Configuration viewDir = new Configuration(Configuration.VERSION_2_3_22);
         viewDir.setClassForTemplateLoading(Main.class, "/templates/");
-//        port(8000);
-        port(getHerokuAssignedPort());
 
         Connection conn;
         if (System.getenv("DATABASE_URL") != null) {
             conn = TempUtil.createHerokueDBConnection(); // Heroku DB
+            port(getHerokuAssignedPort());
         } else {
             conn = TempUtil.createLocalDBConnection();
+            port(8000);
         }
         RA ra = new RA(conn);
 
