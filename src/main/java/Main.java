@@ -2,6 +2,7 @@ import static spark.Spark.*;
 
 import org.json.JSONArray;
 import ra.RA;
+import ra.SchemaRequest;
 import spark.ModelAndView;
 import spark.template.freemarker.FreeMarkerEngine;
 
@@ -45,6 +46,7 @@ public class Main {
          * RA-query endpoint
          */
         get("/query/*", (req, res) -> {
+            res.header("Access-Control-Allow-Origin", "*");
             JSONArray results = new JSONArray();
             String queryString = req.splat()[0];
             if (queryString != null) {
@@ -53,6 +55,24 @@ public class Main {
                 for (String query : queries)
                 {
                     results.put(ra.evaluateRAQuery(query + ";").toJson());
+                }
+            }
+            return results.toString(4);
+        });
+
+        /**
+         * Schema-request endpoint
+         */
+        get("/schema/*", (req, res) -> {
+            res.header("Access-Control-Allow-Origin", "*");
+            JSONArray results = new JSONArray();
+            String requestString = req.splat()[0];
+            if (requestString != null) {
+                // Divide up the multiple requests
+                String[] schemaReqs = requestString.split(";");
+                for (String schemaReq : schemaReqs)
+                {
+                    results.put(new SchemaRequest(ra, schemaReq).toJson());
                 }
             }
             return results.toString(4);
