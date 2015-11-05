@@ -1,27 +1,24 @@
-TODO
-====
-- Finish visitor/generation of SQL statements
-- Create REST API
-- Set up PostgreSQL database, maybe need to make a build script to set it up?
-    - Current plan: run PostgreSQL on Vagrant and connect to it from local
-
 Build Steps
 ===========
-Clone repo
-mvn compile
-mvn package
-run generated jar in target folder
+The current iteration of the backend requires you to have Vagrant. The build
+process will create the vm, setup the vm, and build the required jars to run
+the webserver. The steps are as follows:
 
+    1. Clone the repo
+    2. Create the VM (using the command "vagrant up")
+    3. SSH into the VM ("vagrant ssh")
+    4. Go to the shared directory ("cd /vagrant")
+    5. Run the build script "init.sh" ("./init.sh")
+        - This will take a while
+        - You will be prompted to accept an OpenJDK agreement, you must
+            accept this for the installation to be successful
+    6. Run the server using the command specified at the end of the prompt
+        ("java -jar /vagrant/target/ra3-1.0-SNAPSHOT-jar-with-dependencies.jar")
+    7. You can now access the website on your host machine @ localhost:8080
 
-PostgreSQL
-CREATE DATABASE
-CREATE USER
-GRANT PRIVILEGES
-Connect to connection string in Java
 
 Heroku PostgreSQL DB Setup
 ==========================
-
 First, add the PostgreSQL addon to create the database for the web app;
 
 "heroku addons:create heroku-postgresql:hobby-dev"
