@@ -15,6 +15,7 @@ sudo apt-get -y install postgresql postgresql-contrib
 sudo -u postgres psql -c "CREATE USER raservice WITH PASSWORD 'test'";
 sudo -u postgres psql -c "CREATE DATABASE beers WITH OWNER = raservice;"
 sudo -u postgres psql -f setup-queries.sql beers
+sudo -u postgres psql beers -c "GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO raservice;"
 echo "##### Finish PostgreSQL setup #####"
 
 echo "##### Compiling source code #####"
@@ -22,5 +23,10 @@ sudo apt-get -y install maven
 mvn compile
 mvn package
 
-echo "Done! To start the server, use the command: "
-echo "java -jar /vagrant/target/ra3-1.0-SNAPSHOT-jar-with-dependencies.jar"
+echo "########################################################################"
+echo "#                                                                      #"
+echo "#             Done! To start the server, use the command:              #"
+echo "#                                                                      #"
+echo "# java -jar /vagrant/target/ra3-1.0-SNAPSHOT-jar-with-dependencies.jar #"
+echo "#                                                                      #"
+echo "########################################################################"
