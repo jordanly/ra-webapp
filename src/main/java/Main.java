@@ -2,7 +2,10 @@ import static spark.Spark.*;
 
 import org.json.JSONArray;
 import ra.RA;
+import spark.Filter;
 import spark.ModelAndView;
+import spark.Request;
+import spark.Response;
 import spark.template.freemarker.FreeMarkerEngine;
 
 import freemarker.template.*;
@@ -32,6 +35,12 @@ public class Main {
             conn = TempUtil.createLocalDBConnection();
             port(8000);
         }
+
+        /**
+         * Add CORS -- TODO remove in production
+         */
+        enableCORS("*", "*", "*");
+
         RA ra = new RA(conn);
 
         /**
@@ -56,6 +65,17 @@ public class Main {
                 }
             }
             return results.toString(4);
+        });
+    }
+
+    private static void enableCORS(final String origin, final String methods, final String headers) {
+        before(new Filter() {
+            @Override
+            public void handle(Request request, Response response) {
+                response.header("Access-Control-Allow-Origin", origin);
+                response.header("Access-Control-Request-Method", methods);
+                response.header("Access-Control-Allow-Headers", headers);
+            }
         });
     }
 
