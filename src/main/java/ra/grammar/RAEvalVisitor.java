@@ -164,7 +164,6 @@ public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
 
     @Override
     public String visitJoinExp(RAGrammarParser.JoinExpContext ctx) {
-        // TODO multiple conditions such as AND/OR
         String left = visit(ctx.getChild(0));
         String condition = extractOperatorOption(
                 ctx.getChild(2).getText(),
@@ -173,10 +172,7 @@ public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
         );
         String right = visit(ctx.getChild(3));
 
-        return String.format("( %s ) %s JOIN ( %s ) %s ON ( %s )",
-                left, generateAlias(),
-                right, generateAlias(),
-                condition);
+        return generateJoinStatement(left, condition, right);
     }
 
     @Override
@@ -195,7 +191,22 @@ public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
 
     @Override
     public String visitJoinTermExp(RAGrammarParser.JoinTermExpContext ctx) {
-        return visitChildren(ctx); // TODO
+        String left = visit(ctx.getChild(0));
+        String condition = extractOperatorOption(
+                ctx.getChild(2).getText(),
+                ctx.getChild(1).getText(),
+                ctx
+        );
+        String right = visit(ctx.getChild(3));
+
+        return generateJoinStatement(left, condition, right);
+    }
+
+    private String generateJoinStatement(String left, String condition, String right) {
+        return String.format("( %s ) %s JOIN ( %s ) %s ON ( %s )",
+                left, generateAlias(),
+                right, generateAlias(),
+                condition);
     }
 
     @Override
@@ -255,8 +266,6 @@ public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
         return "t" + tempCount++;
     }
 
-    // TODO should i also validate what is in here? what are characters that are never allowed
-    // TODO only allow alphanumeric characters and =? also should i remove white space
     private String extractOperatorOption(String val, String operation, ParserRuleContext ctx) {
         String option = val.substring(2, val.length() - 1); // remove "_{" + "}"
         return (errorParser.validateOperatorOption(query, option, operation, ctx)

@@ -9,7 +9,7 @@ import java.io.*;
  */
 public class RAFileTest {
     public static void main(String[] args) throws IOException {
-        File file = new File("/Users/jordanly/Documents/Duke/cs316/test-queries/jju-queries.txt");
+        File file = new File("/Users/jordanly/Documents/Duke/cs316/test-queries/kdo-queries.txt");
         BufferedReader br = new BufferedReader(new FileReader(file));
         StringBuilder sb = new StringBuilder();
         String line;
