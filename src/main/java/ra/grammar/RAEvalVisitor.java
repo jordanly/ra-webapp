@@ -87,12 +87,12 @@ public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
             case "\\select":
                 command = String.format("SELECT * FROM ( %s ) %s WHERE %s ",
                         visit(ctx.getChild(2)), generateAlias(),
-                        extractOperatorOption(ctx.getChild(1).getText()));
+                        extractOperatorOption(ctx.getChild(1).getText(), operation, ctx));
 
                 break;
             case "\\project":
                 command = String.format("SELECT DISTINCT %s FROM ( %s ) %s ",
-                        extractOperatorOption(ctx.getChild(1).getText()),
+                        extractOperatorOption(ctx.getChild(1).getText(), operation, ctx),
                         visit(ctx.getChild(2)), generateAlias());
                 break;
             case "\\rename":
@@ -120,7 +120,11 @@ public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
                 }
 
                 // Make sure number of attributes are same
-                String[] newNames = extractOperatorOption(ctx.getChild(1).getText()).split(",");
+                String[] newNames = extractOperatorOption(
+                        ctx.getChild(1).getText(),
+                        operation,
+                        ctx
+                ).split(",");
                 if (newNames.length != columnNames.length) {
                     query.setException(new RAException(
                             ctx.getStart(),
@@ -162,7 +166,11 @@ public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
     public String visitJoinExp(RAGrammarParser.JoinExpContext ctx) {
         // TODO multiple conditions such as AND/OR
         String left = visit(ctx.getChild(0));
-        String condition = extractOperatorOption(ctx.getChild(2).getText());
+        String condition = extractOperatorOption(
+                ctx.getChild(2).getText(),
+                ctx.getChild(1).getText(),
+                ctx
+        );
         String right = visit(ctx.getChild(3));
 
         return String.format("( %s ) %s JOIN ( %s ) %s ON ( %s )",
@@ -249,7 +257,9 @@ public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
 
     // TODO should i also validate what is in here? what are characters that are never allowed
     // TODO only allow alphanumeric characters and =? also should i remove white space
-    private String extractOperatorOption(String val) {
-        return val.substring(2, val.length() - 1); // remove "_{" + "}"
+    private String extractOperatorOption(String val, String operation, ParserRuleContext ctx) {
+        String option = val.substring(2, val.length() - 1); // remove "_{" + "}"
+        return (errorParser.validateOperatorOption(query, option, operation, ctx)
+                ? option : "ERROR");
     }
 }

@@ -7,7 +7,11 @@ import util.TempUtil;
  */
 public class RAQueryTest {
     public static void main(String[] args) {
-        String query = ("\\select_{name like 'B%'} drinker;");
+        String query = ("\\project_{name,address} (\n" +
+                "  (\n" +
+                "    \\select_{bar = 'James Joyce Pub' and times_a_week > 1} frequents\n" +
+                "  ) \\join_{name=drinker} drinker\n" +
+                ");\n");
         System.out.println(query);
         RA ra = new RA(TempUtil.createLocalDBConnection());
         Query ans = ra.evaluateRAQuery(query);
