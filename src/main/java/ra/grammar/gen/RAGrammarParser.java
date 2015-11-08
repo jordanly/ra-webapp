@@ -1,10 +1,13 @@
-// Generated from /Users/jordanly/Documents/workspace/ra3/src/main/java/ra.grammar/RAGrammar.g4 by ANTLR 4.5.1
+// Generated from /Users/jordanly/Documents/workspace/ra3/src/main/java/ra/grammar/RAGrammar.g4 by ANTLR 4.5.1
 package ra.grammar.gen;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.misc.*;
 import org.antlr.v4.runtime.tree.*;
 import java.util.List;
+import java.util.Iterator;
+import java.util.ArrayList;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
 public class RAGrammarParser extends Parser {
@@ -17,7 +20,7 @@ public class RAGrammarParser extends Parser {
 		WS=1, LEFT_PAREN=2, RIGHT_PAREN=3, STATEMENT_TERMINATOR=4, TABLE_NAME=5, 
 		SELECT=6, PROJECT=7, JOIN=8, CROSS=9, UNION=10, DIFF=11, INTERSECT=12, 
 		RENAME=13, SQLEXEC=14, OPERATOR_OPTION=15, INSIDE_OPERATOR_OPTION=16, 
-		COMMENT=17;
+		COMMENT=17, SINGLELINE_COMMENT=18;
 	public static final int
 		RULE_exp0 = 0, RULE_exp_unit = 1, RULE_exp_unary = 2, RULE_exp = 3, RULE_exp1 = 4;
 	public static final String[] ruleNames = {
@@ -31,7 +34,7 @@ public class RAGrammarParser extends Parser {
 	private static final String[] _SYMBOLIC_NAMES = {
 		null, "WS", "LEFT_PAREN", "RIGHT_PAREN", "STATEMENT_TERMINATOR", "TABLE_NAME", 
 		"SELECT", "PROJECT", "JOIN", "CROSS", "UNION", "DIFF", "INTERSECT", "RENAME", 
-		"SQLEXEC", "OPERATOR_OPTION", "INSIDE_OPERATOR_OPTION", "COMMENT"
+		"SQLEXEC", "OPERATOR_OPTION", "INSIDE_OPERATOR_OPTION", "COMMENT", "SINGLELINE_COMMENT"
 	};
 	public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
 
@@ -710,7 +713,7 @@ public class RAGrammarParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3\23\\\4\2\t\2\4\3"+
+		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3\24\\\4\2\t\2\4\3"+
 		"\t\3\4\4\t\4\4\5\t\5\4\6\t\6\3\2\3\2\3\2\3\2\3\3\3\3\3\3\3\3\3\3\5\3\26"+
 		"\n\3\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\5\4\"\n\4\3\5\3\5\3\5\3\5"+
 		"\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3"+

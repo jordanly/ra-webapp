@@ -1,4 +1,4 @@
-// Generated from /Users/jordanly/Documents/workspace/ra3/src/main/java/ra.grammar/RAGrammar.g4 by ANTLR 4.5.1
+// Generated from /Users/jordanly/Documents/workspace/ra3/src/main/java/ra/grammar/RAGrammar.g4 by ANTLR 4.5.1
 package ra.grammar.gen;
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 

@@ -23,7 +23,7 @@ public class RAErrorParser {
         new RAError("must have the same number of columns", "ERROR: Each relation must have the same number of columns")
     };
     public static String COLUMN_NAME_REGEX = "^[a-zA-Z_][a-zA-Z0-9_]*$";
-    public static String CONDITION_REGEX = "^(not)*\\s*[a-zA-Z_][a-zA-Z0-9_]*\\s*(<|<=|=|>=|>|<>|like)\\s*('[^']*'|[^\\s]*)$";
+    public static String CONDITION_REGEX = "^\\(*(not)*\\s*[a-zA-Z_][a-zA-Z0-9_]*\\s*(<|<=|=|>=|>|<>|like)\\s*('[^']*'|[^\\s]*)\\)*$";
 
     private RA ra;
 
@@ -74,7 +74,7 @@ public class RAErrorParser {
     public boolean validateOperatorOption(Query query, String val, String operation,
                                           ParserRuleContext ctx) {
         switch (operation) {
-            case "\\select":
+            case "\\select": case "\\join":
                 String[] conditions = val.split("\\s+(and|or)\\s+");
                 for (String c : conditions) {
                     if (!c.trim().matches(CONDITION_REGEX)) {
@@ -104,15 +104,12 @@ public class RAErrorParser {
                     }
                 }
                 break;
-            case "\\join":
-                // TODO
-                break;
         }
 
         return true;
     }
 
-    private static class RAError { // TODO find out why i have to make this static
+    private static class RAError {
         private Pattern pattern;
         private Matcher matcher;
         private String message;
