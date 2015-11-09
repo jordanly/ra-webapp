@@ -93,16 +93,14 @@ public class Main {
          * Lookahead strings list endpoint
          */
         get("/lookahead/", (req, res) -> {
-            JSONArray colValues = null;
+            JSONArray results = null;
             try {
                 ResultSet rs = ra.evaluateSQLQuery(SQLQueryConstants.LOOKAHEAD_QUERY);
-                colValues = ResultSetUtilities.columnValuesAsJSONArray(rs, SQLQueryConstants.LOOKAHEAD_COLUMN);
+                results = ResultSetUtilities.columnValuesAsJSONArray(rs, SQLQueryConstants.LOOKAHEAD_COLUMN);
             } catch (SQLException e) {
                 // return empty object
-                colValues = new JSONArray(); // TODO Do something better?
+                results = new JSONArray(); // TODO Do something better?
             }
-            JSONObject results = new JSONObject();
-            results.put(SQLQueryConstants.LOOKAHEAD_COLUMN, colValues);
             return results.toString(4);
         });
     }
