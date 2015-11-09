@@ -37,17 +37,6 @@ public final class ResultSetUtilities {
         }
     }
 
-    public static String getTableName(ResultSet rs) {
-        try {
-            ResultSetMetaData md = rs.getMetaData();
-            int numCols = md.getColumnCount();
-            return md.getTableName(numCols);
-        } catch (SQLException e) {
-            return "";
-        }
-
-    }
-
     public static JSONArray toJSONArray(ResultSet rs) {
         JSONArray rows = new JSONArray();
 
