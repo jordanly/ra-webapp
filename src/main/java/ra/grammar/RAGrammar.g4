@@ -27,10 +27,11 @@ INSIDE_OPERATOR_OPTION : ~('}'|'\n'|'\r') ;
 
 // C style comments
 COMMENT : '/*' .*? '*/' -> channel(HIDDEN) ;
+SINGLELINE_COMMENT: '//' ~('\r'|'\n')*  -> channel(HIDDEN) ;
 
 // ==========================================
 
-// Parser Rules
+// Paddrser Rules
 
 exp0        : exp STATEMENT_TERMINATOR EOF ;
 
