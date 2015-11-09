@@ -29,6 +29,7 @@ public final class SQLQueryConstants {
             "  AND NOT a.attisdropped\n" +
             "  ORDER BY a.attnum;";
 
+    public static final String LOOKAHEAD_COLUMN = "lookahead";
     public static final String LOOKAHEAD_QUERY = "SELECT a.attname AS lookahead\n" +
             "FROM pg_catalog.pg_attribute a, pg_catalog.pg_class c,\n" +
             "(SELECT c.relname\n" +

@@ -76,6 +76,20 @@ public final class ResultSetUtilities {
         return cols;
     }
 
+    public static JSONArray columnValuesAsJSONArray(ResultSet rs, String columnName) {
+        JSONArray values = new JSONArray();
+
+        try {
+            int colIndex = rs.findColumn(columnName);
+            while (rs.next()) {
+                values.put(rs.getString(colIndex));
+            }
+        } catch (Exception e) {
+            // do nothing, return empty list // TODO do something better
+        }
+        return values;
+    }
+
     public static void print(ResultSet rs) {
         try {
             ResultSetMetaData md = rs.getMetaData();

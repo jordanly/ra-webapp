@@ -1,6 +1,7 @@
 import static spark.Spark.*;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 import ra.RA;
 import ra.SchemaRequest;
 import spark.Filter;
@@ -10,9 +11,13 @@ import spark.Response;
 import spark.template.freemarker.FreeMarkerEngine;
 
 import freemarker.template.*;
+import util.ResultSetUtilities;
 import util.TempUtil;
+import constants.SQLQueryConstants;
 
 import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.ResultSet;
 import java.util.*;
 
 /**
@@ -81,6 +86,23 @@ public class Main {
                     results.put(new SchemaRequest(ra, schemaReq).toJson());
                 }
             }
+            return results.toString(4);
+        });
+
+        /**
+         * Lookahead strings list endpoint
+         */
+        get("/lookahead/", (req, res) -> {
+            JSONArray colValues = null;
+            try {
+                ResultSet rs = ra.evaluateSQLQuery(SQLQueryConstants.LOOKAHEAD_QUERY);
+                colValues = ResultSetUtilities.columnValuesAsJSONArray(rs, SQLQueryConstants.LOOKAHEAD_COLUMN);
+            } catch (SQLException e) {
+                // return empty object
+                colValues = new JSONArray(); // TODO Do something better?
+            }
+            JSONObject results = new JSONObject();
+            results.put(SQLQueryConstants.LOOKAHEAD_COLUMN, colValues);
             return results.toString(4);
         });
     }
