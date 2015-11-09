@@ -32,29 +32,69 @@ the URL will be an environment variable "DATABASE_URL".
 
 Front-Back API Details
 =========
-JSON Format: JSONArray consisting of results for each query.
+**Main endpoint for displaying the page:** "/"
 
-    [
-        {
-            isError: boolean
-            query: String of original query
-            error:
+**RA-query endpoint:** "/query/*"
+- * is a multi-query string in URL encoding
+- Multiple queries are separated by ";" characters
+- Newline characters are allowed
+- JSON format: JSONArray consisting of results for each query
+```
+[
+    {
+        isError: boolean
+        query: String of original query
+        error:
+            {
+                start: line:column
+                end: line:column
+                message: String error message
+            }
+        columnNames: [col1, col2, ...]
+        data: list of maps for each tuple
+            [
                 {
-                    start: line:column
-                    end: line:column
-                    message: String error message
-                }
-            columnNames: [col1, col2, ...]
-            data: list of maps for each tuple
-                [
-                    {
-                        col1: data1
-                        col2: data2
-                        ....
-                    },
-                    ....
-                ]
-        },
-        ...
-    ]
+                    col1: data1
+                    col2: data2
+                    ...
+                },
+                ...
+            ]
+    },
+    ...
+]
+```
+**Schema-request endpoint:** "/schema/*"
+- Syntax:
+    - Request for a list of relations: "\d;"
+    - Request for table details: "\d [tablename];"
+- * is a multi-query string in URL encoding
+- Multiple queries are separated by ";" characters
+- Newline characters are allowed
+- Leading/trailing/multiple whitespaces are disregarded
+- JSON format: JSONArray consisting of results for each request.
+```
+[
+    {
+        isError: boolean
+        query: String of original query
+        error:
+            {
+                message: String error message
+            }
+        title: String title of table
+        columnNames: [col1, col2, ...]
+        data: list of maps for each tuple
+            [
+                {
+                    col1: data1
+                    col2: data2
+                    ...
+                },
+                ...
+            ]
+    },
+    ...
+]
+```
 
