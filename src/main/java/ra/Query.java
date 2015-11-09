@@ -88,7 +88,7 @@ public class Query {
         return resultSet;
     }
 
-    public JSONObject getAstTree() {
+    public JSONObject getAstTreeJson() {
         JSONObject obj = new JSONObject();
 
         obj.put("isError", astTree == null);

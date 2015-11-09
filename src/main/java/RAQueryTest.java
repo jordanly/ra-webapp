@@ -12,7 +12,7 @@ public class RAQueryTest {
         RA ra = new RA(TempUtil.createLocalDBConnection());
         Query ans = ra.evaluateRAQuery(query);
         System.out.println(ans.toJson().toString(4));
-        System.out.println(ans.getAstTree().toString(4));
+        System.out.println(ans.getAstTreeJson().toString(4));
 
 //        try {
 //            ra.evaluateSQLQuery("SELECT * FROM (  ( SELECT * FROM frequents t51 )  ) t80 WHERE drinker = 'Ben' ");
