@@ -97,4 +97,10 @@ Front-Back API Details
     ...
 ]
 ```
-
+**Lookahead strings endpoint:** "/lookahead/"
+- Returns a list of strings containing table names and columns
+- List is returned in sorted order with duplicates removed
+- JSON format: JSONArray containing lookahead strings
+```
+[str1, str2, ...]
+```
