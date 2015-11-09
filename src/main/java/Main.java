@@ -10,7 +10,6 @@ import spark.Response;
 import spark.template.freemarker.FreeMarkerEngine;
 
 import freemarker.template.*;
-import util.ResultSetUtilities;
 import util.TempUtil;
 
 import java.sql.Connection;

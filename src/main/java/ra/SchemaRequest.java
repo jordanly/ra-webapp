@@ -7,33 +7,14 @@ import ra.exceptions.SchemaException;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
-import java.io.*;
+import constants.SQLQueryConstants;
 
 /**
  * Created by Jennie Ju
  */
 public class SchemaRequest {
     private static final String SCHEMA_INDICATOR = "\\d";
-    private static final String RELATION_SQL_KEY = "relation";
-    private static final String TABLE_SQL_KEY  = "table";
     private static final int MAX_TOKENS = 2;
-    private static final Map<String, String> sqlQueryMap;
-    static {
-        Map<String, String> map = new HashMap<>();
-        Properties prop = new Properties();
-        try {
-            InputStream input = SchemaRequest.class.getClassLoader().getResourceAsStream("backendSQL/schemaSQL.properties");
-            prop.load(input);
-        } catch (IOException e) {
-            e.printStackTrace(); // TODO: Display real error
-        }
-
-        for (String key : prop.stringPropertyNames()) {
-            map.put(key, prop.getProperty(key));
-        }
-        sqlQueryMap = Collections.unmodifiableMap(map);
-    }
 
     private SchemaException exception;
     private ResultSet resultSet;
@@ -57,7 +38,7 @@ public class SchemaRequest {
 
         if (isRelationRequest(tokens)) {
             try {
-                rs = ra.evaluateSQLQuery(sqlQueryMap.get(SchemaRequest.RELATION_SQL_KEY));
+                rs = ra.evaluateSQLQuery(SQLQueryConstants.RELATIONS_QUERY);
                 this.title = "List of Relations";
             } catch (SQLException e) {
                 // Should not reach this error
@@ -66,7 +47,7 @@ public class SchemaRequest {
         }
         else {
             try {
-                String tableQuery = String.format(sqlQueryMap.get(SchemaRequest.TABLE_SQL_KEY), tokens[1]);
+                String tableQuery = String.format(SQLQueryConstants.TABLE_QUERY, tokens[1]);
                 rs = ra.evaluateSQLQuery(tableQuery);
                 this.title = String.format("Table \"%s\"", tokens[1]);
                 if (!rs.isBeforeFirst()) { // table empty
