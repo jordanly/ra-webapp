@@ -4,9 +4,11 @@ import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.json.JSONObject;
+import ra.ast.RAASTNode;
+import ra.ast.RAASTVisitor;
 import ra.exceptions.RAException;
-import ra.grammar.RAErrorListener;
-import ra.grammar.RAErrorStrategy;
+import ra.grammar.error.RAErrorListener;
+import ra.grammar.error.RAErrorStrategy;
 import ra.grammar.RAEvalVisitor;
 import ra.grammar.gen.RAGrammarLexer;
 import ra.grammar.gen.RAGrammarParser;
@@ -20,6 +22,7 @@ public class Query {
     private ResultSet resultSet;
     private String raQuery;
     private String sqlQuery;
+    private RAASTNode astTree;
 
     public Query(RA ra, String raQuery) {
         this.raQuery = raQuery;
@@ -47,6 +50,7 @@ public class Query {
 
         this.tree = parser.exp0();
         this.sqlQuery = new RAEvalVisitor(ra, this).visit(tree);
+        this.astTree = new RAASTVisitor().visit(tree);
 
         if (isValid()) {
             try {
@@ -82,6 +86,19 @@ public class Query {
 
     public ResultSet getResultSet() {
         return resultSet;
+    }
+
+    public JSONObject getAstTree() {
+        JSONObject obj = new JSONObject();
+
+        obj.put("isError", astTree == null);
+        if (astTree == null) {
+            obj.put("error", exception.asJson());
+        } else {
+            obj.put("tree", astTree.toJson());
+        }
+
+        return obj;
     }
 
     @Override

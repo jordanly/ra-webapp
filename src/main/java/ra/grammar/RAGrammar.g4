@@ -36,7 +36,7 @@ SINGLELINE_COMMENT: '//' ~('\r'|'\n')*  -> channel(HIDDEN) ;
 exp0        : exp STATEMENT_TERMINATOR EOF ;
 
 exp_unit    : TABLE_NAME                                #tableExp
-            | LEFT_PAREN exp1 RIGHT_PAREN                #parenExp
+            | LEFT_PAREN exp1 RIGHT_PAREN               #parenExp
             ;
 
 exp_unary   : exp_unit                                  #unitExp

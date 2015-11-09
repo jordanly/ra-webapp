@@ -1,4 +1,4 @@
-package ra.grammar;
+package ra.grammar.error;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import ra.Query;
