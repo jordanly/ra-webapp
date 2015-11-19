@@ -38,17 +38,17 @@ Front-Back API Details
 - * is a multi-query string in URL encoding
 - Multiple queries are separated by ";" characters
 - Newline characters are allowed
-- JSON format: JSONArray consisting of results for each query
+- JSON format: JSONArray consisting of JSONObjects for each query
 ```
 [
     {
         isError: boolean
-        query: String of original query
+        query: string of original query
         error:
             {
                 start: line:column
                 end: line:column
-                message: String error message
+                message: string error message
             }
         columnNames: [col1, col2, ...]
         data: list of maps for each tuple
@@ -72,15 +72,15 @@ Front-Back API Details
 - Multiple queries are separated by ";" characters
 - Newline characters are allowed
 - Leading/trailing/multiple whitespaces are disregarded
-- JSON format: JSONArray consisting of results for each request.
+- JSON format: JSONArray consisting of JSONObjects for each request
 ```
 [
     {
         isError: boolean
-        query: String of original query
+        query: string of original query
         error:
             {
-                message: String error message
+                message: string error message
             }
         title: String title of table
         columnNames: [col1, col2, ...]
@@ -103,4 +103,34 @@ Front-Back API Details
 - JSON format: JSONArray containing lookahead strings
 ```
 [str1, str2, ...]
+```
+
+**Abstract syntax tree (AST) query endpoint:** "/ast/*"
+- * is a multi-query string in URL encoding
+- Multiple queries are separated by ";" characters
+- Newline characters are allowed
+- JSON format: JSONArray consisting of JSONObjects for each query
+    - NOTE: Tree is returned as the root node JSONObject with children contained within
+```
+[
+    {
+        isError: boolean
+        query: string of original query
+        error:
+            {
+                start: line:column
+                end: line:column
+                message: string error message
+            }
+        tree: root node object 
+            {
+                name: string name of operation or table name (i.e. "\\project" or "serves")
+                subscript: string indicating operation input if any (i.e. "beer" in \project_{beer})
+                    - empty string if no subscript
+                children: JSONArray of node JSONObjects in {name, subscript, children} format
+                    - empty JSONArray if leaf node
+            }
+    },
+    ...
+]
 ```
