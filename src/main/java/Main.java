@@ -103,6 +103,23 @@ public class Main {
             }
             return results.toString(4);
         });
+
+        /**
+         * AST-query endpoint
+         */
+        get("/ast/*", (req, res) -> {
+            JSONArray results = new JSONArray();
+            String queryString = req.splat()[0];
+            if (queryString != null) {
+                // Divide up the multiple queries
+                String[] queries = queryString.split(";");
+                for (String query : queries)
+                {
+                    results.put(ra.evaluateRAQuery(query + ";").getAstTreeJson());
+                }
+            }
+            return results.toString(4);
+        });
     }
 
     private static void enableCORS(final String origin, final String methods, final String headers) {
