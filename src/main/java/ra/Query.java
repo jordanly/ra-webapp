@@ -91,6 +91,7 @@ public class Query {
     public JSONObject getAstTreeJson() {
         JSONObject obj = new JSONObject();
 
+        obj.put("query", raQuery);
         obj.put("isError", astTree == null);
         if (astTree == null) {
             obj.put("error", exception.asJson());

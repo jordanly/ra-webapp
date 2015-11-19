@@ -1,7 +1,6 @@
 import static spark.Spark.*;
 
 import org.json.JSONArray;
-import org.json.JSONObject;
 import ra.RA;
 import ra.SchemaRequest;
 import spark.Filter;
