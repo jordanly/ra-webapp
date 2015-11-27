@@ -114,8 +114,7 @@ public class RAEvalVisitor extends RAGrammarBaseVisitor<String> {
                     query.setException(new RAException(
                             ctx.getStart(),
                             ctx.getStop(),
-                            "SQLException: Unable to rename attributes",
-                            e
+                            "SQLException: Unable to rename attributes"
                     ));
                     break;
                 }

@@ -56,7 +56,9 @@ public class Query {
             try {
                 this.resultSet = ra.evaluateSQLQuery(sqlQuery);
             } catch (Exception e) {
-                e.printStackTrace(); // TODO write real code
+                this.exception = new RAException(
+                    "UNKNOWN EXCEPTION: " + e.getMessage()
+                );
             }
         }
     }
@@ -104,6 +106,6 @@ public class Query {
 
     @Override
     public String toString() {
-        return ResultSetUtilities.asString(resultSet);
+        return raQuery;
     }
 }

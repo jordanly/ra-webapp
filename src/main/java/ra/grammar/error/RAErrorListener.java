@@ -21,7 +21,7 @@ public class RAErrorListener extends BaseErrorListener {
     public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol,
                             int line, int charPositionInLine, String msg, RecognitionException e) {
         query.setException(
-                new RAException(e.getOffendingToken(), e.getOffendingToken(), msg, e)
+                new RAException(e.getOffendingToken(), e.getOffendingToken(), msg)
         );
     }
 }

@@ -51,19 +51,27 @@ public class RAErrorParser {
                     query.setException(new RAException(
                             ctx.getStart(),
                             ctx.getStop(),
-                            error.printMessage(),
-                            e
+                            error.printMessage()
                     ));
 
                     return false;
                 }
             }
 
+            // Log it as well
+            System.err.println(
+                "UNKNOWN: Did not recognize this error, contact an administrator -- STACK TRACK "
+                    + e.getMessage()
+                    + " RA QUERY: "
+                    + query.toString()
+            );
+
             // If error but we don't know what error it is
             query.setException(new RAException(
                     ctx.getStart(),
                     ctx.getStop(),
-                    "UNKNOWN: " + e.getMessage() // TODO fix?
+                    "UNKNOWN: Did not recognize this error, contact an administrator -- STACK TRACK "
+                            + e.getMessage()
             ));
             return false;
         }
