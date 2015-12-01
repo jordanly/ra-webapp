@@ -7,18 +7,7 @@ import util.TempUtil;
  */
 public class RAQueryTest {
     public static void main(String[] args) {
-        String query = ("\\project_{bar, beer} (\n" +
-                "\t(\n" +
-                "\t\t\\project_{bar, beer} Serves\n" +
-                "\t\t\\diff\n" +
-                "\\project_{bar1, beer1} (\n" +
-                "\\rename_{bar1, beer1, price1} Serves\n" +
-                "\\rename_{bar2, beer2, price2} Serves\n" +
-                "\t   )\n" +
-                "\t)\n" +
-                "\t\\join\n" +
-                "\t\\select_{drinker='Dan'} Likes\n" +
-                ");\n");
+        String query = ("(\\project_{bar,beer} (Serves)) \\diff (\\project_{bar1,beer1} ((\\rename_{bar1,beer1,price1} (Serves)) \\join_{beer1=beer2 and price>price2} (\\rename_{bar2,beer2,price2} (Serves))));");
         System.out.println(query);
         RA ra = new RA(TempUtil.createLocalDBConnection());
         Query ans = ra.evaluateRAQuery(query);
