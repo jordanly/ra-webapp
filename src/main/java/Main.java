@@ -1,23 +1,22 @@
 import static spark.Spark.*;
 
+import freemarker.template.Configuration;
 import org.json.JSONArray;
 import ra.RA;
-import ra.SchemaRequest;
 import spark.Filter;
 import spark.ModelAndView;
 import spark.Request;
 import spark.Response;
 import spark.template.freemarker.FreeMarkerEngine;
 
-import freemarker.template.*;
-import util.ResultSetUtilities;
-import util.TempUtil;
+import ra.util.ResultSetUtilities;
+import ra.util.TempUtil;
 import constants.SQLQueryConstants;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.ResultSet;
-import java.util.*;
+import java.util.HashMap;
 
 /**
  * @author Jennie Ju

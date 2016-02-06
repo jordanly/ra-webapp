@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="ra3">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/ra3.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

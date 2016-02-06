@@ -1,8 +1,6 @@
-package ra;
-
-
 import org.json.JSONObject;
-import util.ResultSetUtilities;
+import ra.RA;
+import ra.util.ResultSetUtilities;
 import ra.exceptions.SchemaException;
 
 import java.sql.ResultSet;
