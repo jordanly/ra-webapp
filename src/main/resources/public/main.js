@@ -1,6 +1,6 @@
 // ===== Globals =====
 //var DOMAIN = "https://ra-beers-example.herokuapp.com/";
-var DOMAIN = "http://52.4.2.68:8000/";
+var DOMAIN = "http://localhost:8000/";
 var BACKSPACE = 8;
 var ENTER = 13;
 var TAB = 9;

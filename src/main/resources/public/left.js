@@ -348,6 +348,8 @@ var QueryResultPair = React.createClass({
           results.push(fallback);
         } else if (parsed.isError) {
           results.push(<span key={nodeId++}>{parsed.error.message}{"\n"}{"at location " + parsed.error.start + " to " + parsed.error.end + "\n"}</span>);
+        } else if (parsed.isAssignment) {
+          results.push(<span key={nodeId++}>{"Valid assignment query."}</span>);
         } else if (!parsed.data) {
           results.push(fallback);
         } else {
