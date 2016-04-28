@@ -226,6 +226,16 @@ var TerminalEmulator = React.createClass({
           }
         }
 
+        // If it is a schema request, use schema API
+        var checkSchemaRequest = this.cleanQuery(this.state.currentInput);
+        if (checkSchemaRequest.substring(0,2) == "\\d") {
+          xhttp.open("GET", DOMAIN + "schema/"+encodeURIComponent(checkSchemaRequest), true);
+          xhttp.send();
+          this.setState({commands: newCommands, currentInput: "", history: newHistory, historyIndex: newHistoryIndex});
+          return;
+        }
+
+        // Otherwise, it is a regular query
         var variableDecs = ""
         for (var key in this.state.subqueryMap) {
           var value = this.state.subqueryMap[key];
@@ -233,19 +243,12 @@ var TerminalEmulator = React.createClass({
         }
         variableDecs += "\n";
         var combinedQuery = variableDecs += this.state.currentInput;
-        console.log(combinedQuery);
 
         var queryCleanedWithSubqueries = this.expandSubquery(this.cleanQuery(combinedQuery));
-        if (queryCleanedWithSubqueries.substring(0,2) == "\\d") {
-          xhttp.open("GET", DOMAIN + "schema/"+encodeURIComponent(queryCleanedWithSubqueries), true);
-          xhttp.send();
-          this.setState({commands: newCommands, currentInput: "", history: newHistory, historyIndex: newHistoryIndex});
-        } else {
-          xhttp.open("GET", DOMAIN + "query/"+encodeURIComponent(queryCleanedWithSubqueries), true);
-          xhttp.send();
-          this.setState({commands: newCommands, currentInput: "", history: newHistory, historyIndex: newHistoryIndex});
-        }      
-      }        
+        xhttp.open("GET", DOMAIN + "query/"+encodeURIComponent(queryCleanedWithSubqueries), true);
+        xhttp.send();
+        this.setState({commands: newCommands, currentInput: "", history: newHistory, historyIndex: newHistoryIndex});
+      }
     }
   },
 
