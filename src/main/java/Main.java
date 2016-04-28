@@ -28,14 +28,10 @@ public class Main {
         Configuration viewDir = new Configuration(Configuration.VERSION_2_3_22);
         viewDir.setClassForTemplateLoading(Main.class, "/templates/");
 
-        Connection conn;
-        if (System.getenv("DATABASE_URL") != null) {
-            conn = TempUtil.createHerokueDBConnection(); // Heroku DB
-            port(getHerokuAssignedPort());
-        } else {
-            conn = TempUtil.createLocalDBConnection();
+        // Create DB connection
+        // TODO try/catch?
+        Connection conn = TempUtil.createLocalDBConnection();
             port(8000);
-        }
 
         /**
          * Add CORS -- TODO remove in production
@@ -122,14 +118,6 @@ public class Main {
                 response.header("Access-Control-Allow-Headers", headers);
             }
         });
-    }
-
-    private static int getHerokuAssignedPort() {
-        ProcessBuilder processBuilder = new ProcessBuilder();
-        if (processBuilder.environment().get("PORT") != null) {
-            return Integer.parseInt(processBuilder.environment().get("PORT"));
-        }
-        return 4567; //return default port if heroku-port isn't set (i.e. on localhost)
     }
 }
 
