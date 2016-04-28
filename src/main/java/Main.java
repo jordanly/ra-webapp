@@ -23,8 +23,6 @@ import java.util.HashMap;
  */
 
 public class Main {
-
-
     public static void main(String[] args) {
         staticFileLocation("/public");
         Configuration viewDir = new Configuration(Configuration.VERSION_2_3_22);
@@ -60,12 +58,7 @@ public class Main {
             JSONArray results = new JSONArray();
             String queryString = req.splat()[0];
             if (queryString != null) {
-                // Divide up the multiple queries
-                String[] queries = queryString.split(";");
-                for (String query : queries)
-                {
-                    results.put(ra.evaluateRAQuery(query + ";").toJson());
-                }
+                results.put(ra.evaluateRAQuery(queryString).toJson());
             }
             return results.toString(4);
         });
@@ -78,7 +71,7 @@ public class Main {
             String requestString = req.splat()[0];
             if (requestString != null) {
                 // Divide up the multiple requests
-                String[] schemaReqs = requestString.replace("\n", "").split(";");
+                String[] schemaReqs = requestString.replace("\n", "").split(";"); // TODO dont split?
                 for (String schemaReq : schemaReqs)
                 {
                     results.put(new SchemaRequest(ra, schemaReq).toJson());
@@ -110,7 +103,7 @@ public class Main {
             String queryString = req.splat()[0];
             if (queryString != null) {
                 // Divide up the multiple queries
-                String[] queries = queryString.split(";");
+                String[] queries = queryString.split(";"); // TODO don't split?
                 for (String query : queries)
                 {
                     results.put(ra.evaluateRAQuery(query + ";").getAstTreeJson());

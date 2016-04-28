@@ -15,8 +15,15 @@ var TerminalEmulator = React.createClass({
       color: "#0f0",
       history: [""],
       historyIndex: -1,
-      subqueryList: []
+      subqueryList: [],
+      subqueryMap: {}
     };
+  },
+
+  addSubQuery: function(subquery) {
+    var subquerySplit = subquery.split(" "); // split: let x = _
+    var key = subquerySplit[1];
+    this.state.subqueryMap[key] = subquery;
   },
 
   autocorrect: function(partialCommand)
@@ -218,7 +225,17 @@ var TerminalEmulator = React.createClass({
             }
           }
         }
-        var queryCleanedWithSubqueries = this.expandSubquery(this.cleanQuery(this.state.currentInput));
+
+        var variableDecs = ""
+        for (var key in this.state.subqueryMap) {
+          var value = this.state.subqueryMap[key];
+          variableDecs += value;
+        }
+        variableDecs += "\n";
+        var combinedQuery = variableDecs += this.state.currentInput;
+        console.log(combinedQuery);
+
+        var queryCleanedWithSubqueries = this.expandSubquery(this.cleanQuery(combinedQuery));
         if (queryCleanedWithSubqueries.substring(0,2) == "\\d") {
           xhttp.open("GET", DOMAIN + "schema/"+encodeURIComponent(queryCleanedWithSubqueries), true);
           xhttp.send();
@@ -315,8 +332,10 @@ var TerminalEmulator = React.createClass({
   render: function() {
     var renderedLines = [];
     var color = this.state.color;
+    var addSubQueryFunction = this.addSubQuery;
     this.state.commands.forEach(function(x) {
-      renderedLines.push(<QueryResultPair key={nodeId++} query={x.query} result={x.result} color={color} />);
+      renderedLines.push(<QueryResultPair key={nodeId++} addSubQuery={addSubQueryFunction}
+       query={x.query} result={x.result} color={color} />);
     });
     renderedLines.push(<CurrentInput key={nodeId++} input={this.state.currentInput} color={color}/>);
     return <pre>{renderedLines}</pre>;
@@ -350,6 +369,7 @@ var QueryResultPair = React.createClass({
           results.push(<span key={nodeId++}>{parsed.error.message}{"\n"}{"at location " + parsed.error.start + " to " + parsed.error.end + "\n"}</span>);
         } else if (parsed.isAssignment) {
           results.push(<span key={nodeId++}>{"Valid assignment query."}</span>);
+          this.props.addSubQuery(parsed.query);
         } else if (!parsed.data) {
           results.push(fallback);
         } else {
