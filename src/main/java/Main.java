@@ -31,7 +31,7 @@ public class Main {
         // Create DB connection
         // TODO try/catch?
         Connection conn = TempUtil.createLocalDBConnection();
-            port(8000);
+        port(8000);
 
         /**
          * Add CORS -- TODO remove in production
@@ -67,7 +67,7 @@ public class Main {
             String requestString = req.splat()[0];
             if (requestString != null) {
                 // Divide up the multiple requests
-                String[] schemaReqs = requestString.replace("\n", "").split(";"); // TODO dont split?
+                String[] schemaReqs = requestString.replace("\n", "").split(";");
                 for (String schemaReq : schemaReqs)
                 {
                     results.put(new SchemaRequest(ra, schemaReq).toJson());
@@ -99,11 +99,9 @@ public class Main {
             String queryString = req.splat()[0];
             if (queryString != null) {
                 // Divide up the multiple queries
-                String[] queries = queryString.split(";"); // TODO don't split?
-                for (String query : queries)
-                {
-                    results.put(ra.evaluateRAQuery(query + ";").getAstTreeJson());
-                }
+                // Should only use the last query for AST tree generation
+                String[] queries = queryString.split(";");
+                results.put(ra.evaluateRAQuery(queries[queries.length - 1] + ";").getAstTreeJson());
             }
             return results.toString(4);
         });

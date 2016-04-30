@@ -239,12 +239,13 @@ var TerminalEmulator = React.createClass({
         var variableDecs = ""
         for (var key in this.state.subqueryMap) {
           var value = this.state.subqueryMap[key];
-          variableDecs += value;
+          variableDecs += value.replace("\n", "");
         }
         variableDecs += "\n";
         var combinedQuery = variableDecs += this.state.currentInput;
 
         var queryCleanedWithSubqueries = this.expandSubquery(this.cleanQuery(combinedQuery));
+        console.log(queryCleanedWithSubqueries);
         xhttp.open("GET", DOMAIN + "query/"+encodeURIComponent(queryCleanedWithSubqueries), true);
         xhttp.send();
         this.setState({commands: newCommands, currentInput: "", history: newHistory, historyIndex: newHistoryIndex});
@@ -369,7 +370,16 @@ var QueryResultPair = React.createClass({
         if (!parsed) {
           results.push(fallback);
         } else if (parsed.isError) {
-          results.push(<span key={nodeId++}>{parsed.error.message}{"\n"}{"at location " + parsed.error.start + " to " + parsed.error.end + "\n"}</span>);
+          // We place view definitions on the first line so we want to decrement line number by 1
+          // to match up with actual error portions
+          var newStartArr = parsed.error.start.split(":");
+          var newEndArr = parsed.error.end.split(":");
+          newStartArr[0] = (parseInt(newStartArr[0]) - 1) + "";
+          newEndArr[0] = (parseInt(newEndArr[0]) - 1) + "";
+          var newStartString = newStartArr.join(":");
+          var newEndString = newEndArr.join(":");
+
+          results.push(<span key={nodeId++}>{parsed.error.message}{"\n"}{"at location " + newStartString + " to " + newEndString + "\n"}</span>);
         } else if (parsed.isAssignment) {
           results.push(<span key={nodeId++}>{"Valid assignment query."}</span>);
           this.props.addSubQuery(parsed.query);
