@@ -23,21 +23,15 @@ import java.util.HashMap;
  */
 
 public class Main {
-
-
     public static void main(String[] args) {
         staticFileLocation("/public");
         Configuration viewDir = new Configuration(Configuration.VERSION_2_3_22);
         viewDir.setClassForTemplateLoading(Main.class, "/templates/");
 
-        Connection conn;
-        if (System.getenv("DATABASE_URL") != null) {
-            conn = TempUtil.createHerokueDBConnection(); // Heroku DB
-            port(getHerokuAssignedPort());
-        } else {
-            conn = TempUtil.createLocalDBConnection();
-            port(8000);
-        }
+        // Create DB connection
+        // TODO try/catch?
+        Connection conn = TempUtil.createLocalDBConnection();
+        port(8000);
 
         /**
          * Add CORS -- TODO remove in production
@@ -60,12 +54,7 @@ public class Main {
             JSONArray results = new JSONArray();
             String queryString = req.splat()[0];
             if (queryString != null) {
-                // Divide up the multiple queries
-                String[] queries = queryString.split(";");
-                for (String query : queries)
-                {
-                    results.put(ra.evaluateRAQuery(query + ";").toJson());
-                }
+                results.put(ra.evaluateRAQuery(queryString).toJson());
             }
             return results.toString(4);
         });
@@ -110,11 +99,9 @@ public class Main {
             String queryString = req.splat()[0];
             if (queryString != null) {
                 // Divide up the multiple queries
+                // Should only use the last query for AST tree generation
                 String[] queries = queryString.split(";");
-                for (String query : queries)
-                {
-                    results.put(ra.evaluateRAQuery(query + ";").getAstTreeJson());
-                }
+                results.put(ra.evaluateRAQuery(queries[queries.length - 1] + ";").getAstTreeJson());
             }
             return results.toString(4);
         });
@@ -129,14 +116,6 @@ public class Main {
                 response.header("Access-Control-Allow-Headers", headers);
             }
         });
-    }
-
-    private static int getHerokuAssignedPort() {
-        ProcessBuilder processBuilder = new ProcessBuilder();
-        if (processBuilder.environment().get("PORT") != null) {
-            return Integer.parseInt(processBuilder.environment().get("PORT"));
-        }
-        return 4567; //return default port if heroku-port isn't set (i.e. on localhost)
     }
 }
 
