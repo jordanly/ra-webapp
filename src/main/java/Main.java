@@ -53,6 +53,7 @@ public class Main {
         get("/query/*", (req, res) -> {
             JSONArray results = new JSONArray();
             String queryString = req.splat()[0];
+            System.out.println(queryString);
             if (queryString != null) {
                 results.put(ra.evaluateRAQuery(queryString).toJson());
             }
