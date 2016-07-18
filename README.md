@@ -1,34 +1,20 @@
 Build Steps
 ===========
-The current iteration of the backend requires you to have Vagrant. The build
-process will create the vm, setup the vm, and build the required jars to run
-the webserver. The steps are as follows:
+The current build will only run on Ubuntu-based systems. The steps are as follows:
 
     1. Clone the repo
-    2. Create the VM (using the command "vagrant up")
-    3. SSH into the VM ("vagrant ssh")
-    4. Go to the shared directory ("cd /vagrant")
-    5. Run the build script "init.sh" ("./init.sh")
+    2. Run the build script "init.sh" ("./init.sh")
         - This will take a while
         - You will be prompted to accept an OpenJDK agreement, you must
             accept this for the installation to be successful
-    6. Run the server using the command specified at the end of the prompt
+    3. Run the server using the command specified at the end of the prompt
         ("java -jar /vagrant/target/ra3-1.0-SNAPSHOT-jar-with-dependencies.jar")
-    7. You can now access the website on your host machine @ localhost:8080
+    4. You can now access the website on port 8000.
 
-
-Heroku PostgreSQL DB Setup
-==========================
-First, add the PostgreSQL addon to create the database for the web app;
-
-"heroku addons:create heroku-postgresql:hobby-dev"
-
-Then, add rows to database:
-
-"cat setup-queries.sql | heroku pg:psql --app ra-beers-example"
-
-Then you should be done! You can access the database using "heroku pg:psql" and
-the URL will be an environment variable "DATABASE_URL".
+Hosting on Amazon AWS
+=====================
+In order to host and access the application on an Amazon EC2 instance, make sure
+you edit the security group to allow TCP traffic on port 8000.
 
 Front-Back API Details
 =========

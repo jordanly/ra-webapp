@@ -20,8 +20,9 @@ echo "##### Finish PostgreSQL setup #####"
 
 echo "##### Compiling source code #####"
 sudo apt-get -y install maven
-mvn compile
-mvn package
+sudo mvn install:install-file -Dfile=/home/ubuntu/ra-webapp/lib/ra3.jar -DgroupId=ra3-interpreter -DartifactId=com.ra3-interpreter -Dversion=1.0 -Dpackaging=jar -Dgeneratepom=true
+sudo mvn compile
+sudo mvn package
 
 echo "########################################################################"
 echo "#                                                                      #"
