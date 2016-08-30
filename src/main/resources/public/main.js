@@ -36,6 +36,8 @@ var longHelpMessage = "Relational Algebra Expressions: \n"
                        + "COLORS \n"
                        + "By typing in a color from below list of colors, you can change the color of the prompt. \n"
                        + "List of Colors: black, blue, gold, gray, green, orange, purple, red, white, yellow, ghost protocol \n"
+                       + "EXPORT \n"
+                       + "By typing 'export', you will save all the subqueries you've submitted to a file on your computer. \n"
                        + "HISTORY \n"
                        + "By using the up and down arrow keys, you can navigate the command history"; 
 var subquerySuccess = "subquery succesfully stored";
