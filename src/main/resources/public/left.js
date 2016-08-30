@@ -21,9 +21,16 @@ var TerminalEmulator = React.createClass({
   },
 
   addSubQuery: function(subquery) {
-    var subquerySplit = subquery.split(" "); // split: let x = _
-    var key = subquerySplit[1];
-    this.state.subqueryMap[key] = subquery;
+    var queries = subquery.trim().split(";");
+    queries.forEach(function(value, index, array) {
+      var cleanedValue = value.trim();
+      if (cleanedValue.trim().localeCompare("") != 0) { // not empty string
+        var subquerySplit = cleanedValue.split(" "); // split: let x = _
+        var key = subquerySplit[1];
+        this.state.subqueryMap[key] = cleanedValue + ";";
+      }
+    }.bind(this));
+    console.log(this.state.subqueryMap);
   },
 
   autocorrect: function(partialCommand)
@@ -165,6 +172,23 @@ var TerminalEmulator = React.createClass({
     } else if (this.state.currentInput == "help --verbose") {
       var newCommands = this.state.commands.concat([{query: this.state.currentInput, result: longHelpMessage}]);
       this.setState({commands: newCommands, currentInput: ""});
+    } else if (this.state.currentInput == "import") {
+      /* TODO implement importing a text file so commands get executed and
+      subquery statements are stored */
+      alert("Someone should implement this");
+      var newCommands = this.state.commands.concat([{query: "", result: ""}]);
+      this.setState({commands: newCommands, currentInput: ""});;
+    } else if (this.state.currentInput == "export") {
+      var subqueryDecs = ""
+      for (var key in this.state.subqueryMap) {
+        subqueryDecs += this.state.subqueryMap[key] + "\n";
+      }
+      subqueryDecs += "\n";
+
+      var blob = new Blob([subqueryDecs], {type: "text/plain;charset=utf-8"});
+      saveAs(blob, "ra-queries.txt");
+      var newCommands = this.state.commands.concat([{query: "", result: ""}]);
+      this.setState({commands: newCommands, currentInput: ""});
     } else if (this.colourNameToHex(this.state.currentInput)) {
       this.setState({currentInput: "", color: this.colourNameToHex(this.state.currentInput)});
     } else if (this.state.currentInput.substring(0,8) == "subquery") {
@@ -245,7 +269,6 @@ var TerminalEmulator = React.createClass({
         var combinedQuery = variableDecs += this.state.currentInput;
 
         var queryCleanedWithSubqueries = this.expandSubquery(this.cleanQuery(combinedQuery));
-        console.log(queryCleanedWithSubqueries);
         xhttp.open("GET", DOMAIN + "query/"+encodeURIComponent(queryCleanedWithSubqueries), true);
         xhttp.send();
         this.setState({commands: newCommands, currentInput: "", history: newHistory, historyIndex: newHistoryIndex});

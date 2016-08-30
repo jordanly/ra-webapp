@@ -16,6 +16,7 @@
 <script src="shared/js/react.min.js"></script>
 <script src="shared/js/JSXTransformer.js"></script>
 <script src="shared/js/d3.min.js"></script>
+<script src="shared/thirdparty/file-saver/FileSaver.min.js"></script>
 <script type="text/jsx" src="left.js"></script>
 <script type="text/jsx" src="right.js"></script>
 <script type="text/jsx" src="main.js"></script>
